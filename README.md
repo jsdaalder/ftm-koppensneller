@@ -1,22 +1,49 @@
-# FTM Headline Coach (FTM Koppensneller)
+# FTM Koppensneller
 
-LLM-powered web app for iterating on headlines: upload a draft, get multiple headline options, give feedback, and generate new rounds. Includes a creator workflow to review user feedback and rebuild/publish the active “prompt profile”.
+Technical explanation in English can be found below.
 
-The active app is the Next.js code in this repo root (`app/`, `lib/`, `middleware.ts`). 
+### Het probleem
+
+Kunstmatige intelligentie kan journalisten helpen met koppen maken. Dat doen veel FTM'ers ook al en soms werkt dat, maar vaak zijn de suggesties:
+- te generiek of “Amerikaans”
+- niet scherp genoeg op de nieuwswaarde
+- niet in FTM-toon (te veel cliché, te weinig concreet, verkeerde focus)
+- onvoldoende consistent (de ene keer raak, de volgende keer mis)
+
+### Wat ik gebouwd heb
+De **FTM Koppensneller** is een webtool die een concept van je artikel gebruikt om koppen te genereren met een taalmodel (om precies te zijn: gpt-4.1). Je kiest de beste opties, geeft feedback (waarom waren de voorgestelde koppen goed of juist niet goed?), en de generator houdt rekening met die feedback bij een volgende ronde. Zo kom je sneller bij een kop die wél FTM-waardig is.
+
+### Hoe ik dit heb gebouwd
+Wat deze tool anders maakt dan ChatGPT is de instructie die gpt4-1 'onder de motorkap' meekrijgt. Daarin staat precies waaraan een FTM-kop moet voldoen. Deze **FTM-specifieke prompt**:
+- ...volgt de door team-socials en hoofd- en eindredactie opgestelde koppenrichtlijn (`content/docs/ftm-koppenchecklist.md`),
+- ...gebruikt voorbeelden en patronen uit een lijst met bestaande FTM-koppen (`content/training/ftm_headline_training.jsonl` en samenvatting in `content/training/historical-corpus-insights.md`),
+- ... is terughoudend met het gebruik van de clichélijst opgesteld door enkele NRC-redacteuren (`content/docs/comite-cliche-weg-ermee.md`)
+- ...neemt (een gecomprimeerde versie van) de FTM-stijlgids in ogenschouw (`content/docs/ftm-stijlgids-condensed.md`)
+- ...leert van de feedback die jij, de gebruiker, geeft op de kopsuggesties (`content/docs/approved-user-feedback-lessons.md`).
+
+
+De prompt zelf kun je in het mapje `prompt_profiles` terugvinden. Dat document is ook los van het gebruik van deze tool nuttig, denk ik.
+
+In de toekomst wil ik de prompt verder verbeteren door een analyse te draaien op een lijst met de koppen die de meeste pageviews van externe platformen hebben gekregen.
+
+---
+
+# Technical information (English)
+
+This repository contains the Next.js app that powers the FTM Koppensneller. The active code lives at the repo root (`app/`, `lib/`, `middleware.ts`).
 
 ## What it does
-- Converts a draft into structured headline generation rounds (multiple “directions” per round).
-- Collects user selections + freeform feedback for each round.
-- Routes learnings to a creator review queue (approve/reject + notes).
-- Rebuilds an active prompt profile from canonical sources (style docs + corpus insights + approved lessons).
-- Enforces strict access control, quota limits, and server-side-only LLM calls.
+- Runs iterative headline generation rounds from an uploaded draft (`.md` in the UI).
+- Collects selections + feedback per round and stores them for review.
+- Provides a creator workflow to approve/reject feedback and rebuild the active prompt profile.
+- Enforces strict access control, quotas, and server-side-only LLM calls.
 
 ## Stack
 - Next.js App Router + TypeScript
 - Supabase (Auth + Postgres)
 - OpenAI API calls (server-side only)
 
-## Main routes
+## Main pages
 - `GET /login`
 - `GET /app` (headline coach)
 - `GET /docs` and `GET /docs/[slug]` (in-app guideline/training docs)
@@ -25,19 +52,19 @@ The active app is the Next.js code in this repo root (`app/`, `lib/`, `middlewar
 - `GET /creator/users`
 - `GET /creator/usage`
 
-## API surface (selected)
-User/session:
+## API (selected)
+User/session
 - `POST /api/sessions`
 - `POST /api/sessions/:id/rounds/:n/generate`
 - `POST /api/sessions/:id/submit-feedback`
 
-Auth / gating:
+Auth / gating
 - `POST /api/auth/magiclink/allowed`
 - `POST /api/auth/ftm/start-verification`
 - `POST /api/auth/ftm/verify-code`
 - `GET /api/auth/ftm/status`
 
-Creator:
+Creator
 - `GET /api/creator/queue`
 - `POST /api/creator/queue/:id/approve`
 - `POST /api/creator/queue/:id/reject`
@@ -46,14 +73,19 @@ Creator:
 - `POST /api/creator/run-weekly-feedback-digest`
 - `GET /api/creator/users`
 
-Cron:
+Cron
 - `POST /api/cron/weekly-feedback-digest`
 - `POST /api/cron/export-approved-feedback`
 - `POST /api/cron/export-approved-feedback-lessons`
 
-## Draft input format
-- The app currently accepts `.md` drafts in the UI.
-- Draft parsing happens server-side; no client-side document parsing.
+## Prompt profile sources
+The active prompt profile is built from the canonical sources in `content/` and `content/training/` and published via the creator workflow. Key inputs include:
+- `content/docs/ftm-koppenchecklist.md`
+- `content/docs/ftm-stijlgids-condensed.md`
+- `content/docs/comite-cliche-weg-ermee.md`
+- `content/training/ftm_headline_training.jsonl`
+- `content/training/historical-corpus-insights.md`
+- `content/docs/approved-user-feedback-lessons.md`
 
 ## Security & access model (high level)
 - OpenAI key is never exposed to the browser (`OPENAI_API_KEY` is server-only).
@@ -80,10 +112,13 @@ Cron:
 3. Set up Supabase DB schema by running the SQL migrations in `supabase/migrations/` (in order).
 4. Start: `npm run dev`
 
-## Scripts / content
-- Canonical docs + training inputs live in `content/`.
-- Prompt profile artifacts live in `prompt_profiles/`.
-- Build/rebuild helpers live in `scripts/`.
+## Repo layout
+- `app/`: Next.js pages + API routes
+- `lib/`: server/client helpers (Supabase, OpenAI, security, etc.)
+- `supabase/migrations/`: database schema and policies
+- `content/`: docs and training inputs (source material)
+- `prompt_profiles/`: generated prompt profile artifacts
+- `scripts/`: profile build/export helpers
 
 ## Notes for publishing
 - Do not commit `.env`, `.env.local`, `.vercel/`, or any key material.

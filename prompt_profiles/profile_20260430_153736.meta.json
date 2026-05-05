@@ -1,0 +1,32 @@
+{
+  "profile_id": "profile_20260430_153736",
+  "created_at": "2026-04-30T15:37:36.008091+00:00",
+  "source_counts": {
+    "guideline_files": 19,
+    "training_examples": 73
+  },
+  "model": "gpt-5.5",
+  "input_hashes": {
+    "<REPO_ROOT>/training_data/ftm_headline_training.jsonl": "91d050c4555a65e92d13728b31638e3eb87566e9d0fd815a91d0ad6c267bccf7",
+    "<REPO_ROOT>/guidelines/ftm_styleguide/FTM Koppenchecklist.md": "a16f9f1eef2d587e002219b255f7acb9435cc3fa59d18ee6e566ed81b2a08939",
+    "<REPO_ROOT>/guidelines/ftm_styleguide/FTM_stijlgids.docx": "176e5840e5c3bfdc683e40ad1f4a762c7737551ab8bdc1c455e0c4547e5648a3",
+    "<REPO_ROOT>/guidelines/ftm_styleguide/Koppensnellen.pdf": "5295f180c4d0b8ba8714d7d55b7b17626ecdca1876789c586f1999e80c593abe",
+    "<REPO_ROOT>/guidelines/ftm_styleguide/README.md": "798f940fd487aee7bfd1d8e029f431950b37f1424b4b0e848f93062f8a0faf05",
+    "<REPO_ROOT>/guidelines/generic_headline_guides/Comite Cliche Weg Ermee-1.pdf": "bffc7e16e5145f261c198637aca3a29b38f9d7d41f3a1ea905ec1ba1228f11e5",
+    "<REPO_ROOT>/guidelines/generic_headline_guides/README.md": "dd84fbc4efb66ca2debc490bac3dd29dd87ec265fd9f064ce6d1ec6fcecac810",
+    "<REPO_ROOT>/guidelines/extra_docs/README.md": "28a50a9f3f5ff48ce65f8954d3b9fd9f82f0d15a78df1e82f2ed1cb820f01a53",
+    "<REPO_ROOT>/guidelines/extra_docs/social_texts/Socials 1 t_m 12 november.docx": "47be41b8625257df29b36bacd3490fda784210aa7ca28ee3feeffcbf605cc7f1",
+    "<REPO_ROOT>/guidelines/extra_docs/social_texts/Socials 13 t_m 26 november.docx": "4e4ef3137a9b2e860008fdf701660eee6421754e1818a2feca29b9485319f142",
+    "<REPO_ROOT>/guidelines/extra_docs/social_texts/Socials 17 t_m 28 april.docx": "b71fff75cb430c963683ab0ad582e28d85bc6bf351faa215a9f36d8b8d045bae",
+    "<REPO_ROOT>/guidelines/extra_docs/social_texts/Socials 2 t_m 14 april.docx": "df1ad013511a8a4c57b2f9a74bdf52b546882f04257f176ac48596fe0f07354e",
+    "<REPO_ROOT>/guidelines/extra_docs/social_texts/Socials 2 t_m 18 februari.docx": "0d1933f935653ace5279a66a40b24e23e7e4f5d0dab1d0e5b9c404f559d3801f",
+    "<REPO_ROOT>/guidelines/extra_docs/social_texts/Socials 2 tot 14 oktober.docx": "a5609ef151e75f7e5727e102e7f553d71f83634f060ff8300653254e864660cf",
+    "<REPO_ROOT>/guidelines/extra_docs/social_texts/Socials 21 februari t_m 3 maart.docx": "f7e9ab697a9815940ee8323261015d53c13226dbdc40241f8263738c31cf5dd2",
+    "<REPO_ROOT>/guidelines/extra_docs/social_texts/Socials 23 t_m 30 september.docx": "f770b9afe0b71b7c2bac6381346e741405b34c93bd9452fc2ecdaf2be679447b",
+    "<REPO_ROOT>/guidelines/extra_docs/social_texts/Socials 4 tm 16 sep.docx": "acb8930aaf5e038ec64b4135d55be3c80a157925ee83fab9dff996d7fcbb6120",
+    "<REPO_ROOT>/guidelines/extra_docs/social_texts/Socials 9 t_m 21 januari.docx": "381013bcf109e29556fe4a47afc9712c752abbb6835165ed05d185ecc0d16556",
+    "<REPO_ROOT>/guidelines/extra_docs/social_texts/Socials_nieuwsbrieven 12 t_m 24 juli.docx": "b2b7815c9f6b06bee20eec78d55c5b10ce9a09abd31ae010d4c23587a821e36d",
+    "<REPO_ROOT>/guidelines/extra_docs/social_texts/Socialteksten 6 maart t_m 1 april.docx": "085fb004c960236c87918c855f4e69e560dad66f3ec1beea550dfe0e4f62ffde"
+  },
+  "super_prompt_markdown": "<REPO_ROOT>/prompt_profiles/profile_20260430_153736.md"
+}

@@ -1,0 +1,30 @@
+{
+  "profile_id": "profile_20260501185948",
+  "created_at": "2026-05-01T18:59:48.064Z",
+  "model": "gpt-5.5",
+  "input_hash": "76144529590fd01344d2960bc12397fea8b6e5fe4f1a25616c4f5b18dae1fb8a",
+  "approved_export_id": null,
+  "training_jsonl_hash": "91d050c4555a65e92d13728b31638e3eb87566e9d0fd815a91d0ad6c267bccf7",
+  "sources": [
+    {
+      "key": "ftm-stijlgids-condensed",
+      "path": "content/docs/ftm-stijlgids-condensed.md"
+    },
+    {
+      "key": "comite-cliche-weg-ermee",
+      "path": "content/docs/comite-cliche-weg-ermee.md"
+    },
+    {
+      "key": "ftm-koppenchecklist",
+      "path": "content/docs/ftm-koppenchecklist.md"
+    },
+    {
+      "key": "historical_corpus_insights",
+      "path": "content/training/historical-corpus-insights.md"
+    },
+    {
+      "key": "approved_feedback_lessons",
+      "path": "content/docs/approved-user-feedback-lessons.md"
+    }
+  ]
+}

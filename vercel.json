@@ -1,0 +1,16 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/weekly-feedback-digest",
+      "schedule": "0 7 * * 1"
+    },
+    {
+      "path": "/api/cron/export-approved-feedback",
+      "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/export-approved-feedback-lessons",
+      "schedule": "10 6 * * *"
+    }
+  ]
+}

@@ -13,6 +13,8 @@ Kunstmatige intelligentie kan journalisten helpen met koppen maken. Dat doen vee
 ### Wat ik gebouwd heb
 De **FTM Koppensneller** is een webtool die een concept van je artikel gebruikt om koppen te genereren met een taalmodel (om precies te zijn: gpt-4.1). Je kiest de beste opties, geeft feedback (waarom waren de voorgestelde koppen goed of juist niet goed?), en de generator houdt rekening met die feedback bij een volgende ronde. Zo kom je sneller bij een kop die wél FTM-waardig is.
 
+De tool is hier te vinden: https://ftm-koppensneller.vercel.app/
+
 ### Hoe ik dit heb gebouwd
 Wat deze tool anders maakt dan ChatGPT is de instructie die gpt4-1 'onder de motorkap' meekrijgt. Daarin staat precies waaraan een FTM-kop moet voldoen. Deze **FTM-specifieke prompt**:
 - ...volgt de door team-socials en hoofd- en eindredactie opgestelde koppenrichtlijn (`content/docs/ftm-koppenchecklist.md`),

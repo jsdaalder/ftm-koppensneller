@@ -16,6 +16,7 @@ async function listDocs(): Promise<DocItem[]> {
     items.push({ slug, title });
   }
   const pinned = [
+    "super-prompt",
     "ftm-stijlgids",
     "comite-cliche-weg-ermee",
     "ftm-koppenchecklist",

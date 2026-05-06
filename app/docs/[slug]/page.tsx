@@ -6,6 +6,7 @@ import remarkGfm from "remark-gfm";
 import remarkRehype from "remark-rehype";
 import rehypeStringify from "rehype-stringify";
 import { getLatestApprovedFeedbackExport } from "@/lib/server/approved_feedback_export";
+import { getActiveProfile } from "@/lib/server/profiles";
 import { requireCreator, requireUser } from "@/lib/server/auth";
 import ApprovedFeedbackActions from "./ApprovedFeedbackActions";
 
@@ -25,7 +26,10 @@ export default async function DocPage(props: { params: Promise<{ slug: string }>
   const user = await requireUser();
 
   let md = "";
-  if (slug === "approved-user-feedback") {
+  if (slug === "super-prompt") {
+    const active = await getActiveProfile();
+    md = active.prompt_markdown;
+  } else if (slug === "approved-user-feedback") {
     try {
       await requireCreator(user.id);
     } catch {
@@ -63,6 +67,15 @@ export default async function DocPage(props: { params: Promise<{ slug: string }>
             <a className="ftm-coach-btn ftm-coach-btn-dark" href="/app" style={{ textDecoration: "none" }}>
               Terug naar app
             </a>
+            {slug === "super-prompt" ? (
+              <a
+                className="ftm-coach-btn ftm-coach-btn-dark"
+                href="/api/profile/active?format=md"
+                style={{ marginLeft: "auto", textDecoration: "none", opacity: 0.85 }}
+              >
+                Download .md
+              </a>
+            ) : null}
           </div>
         </div>
         {slug === "approved-user-feedback" ? (

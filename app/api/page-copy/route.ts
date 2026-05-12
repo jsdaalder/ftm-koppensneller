@@ -31,19 +31,16 @@ export async function GET(req: Request) {
 
   // Ensure the content files are included in Vercel/Next output tracing by
   // referencing them via a static allowlist.
-  const allowMd: Record<string, string> = {
+  const allowSource: Record<string, string> = {
     app: path.join(process.cwd(), "content", "pages", "app.md"),
   };
-  const allowHtml: Record<string, string> = {
-    app: path.join(process.cwd(), "content", "pages", "app.html"),
-  };
-  const fp = (format === "html" ? allowHtml[slug] : allowMd[slug]) || "";
+  const fp = allowSource[slug] || "";
   if (!fp) return NextResponse.json({ error: "Not found." }, { status: 404 });
   try {
     const raw = await readFile(fp, "utf8");
-    if (format === "html") return NextResponse.json({ slug, format, html: raw });
     const html = await renderMarkdown(raw);
-    return NextResponse.json({ slug, format, html });
+    if (format === "html") return NextResponse.json({ slug, format, html });
+    return NextResponse.json({ slug, format, markdown: raw, html });
   } catch {
     return NextResponse.json({ error: "Not found." }, { status: 404 });
   }

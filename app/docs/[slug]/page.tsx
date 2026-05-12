@@ -73,7 +73,7 @@ export default async function DocPage(props: { params: Promise<{ slug: string }>
                 href="/api/profile/active?format=md"
                 style={{ marginLeft: "auto", textDecoration: "none", opacity: 0.85 }}
               >
-                Download .md
+                Download raw .md
               </a>
             ) : null}
           </div>

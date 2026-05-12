@@ -11,6 +11,10 @@ We gebruiken een uitgebreide **LLM-superprompt** die is samengesteld op basis va
 - patronen uit historische koppen (samenvatting + representatieve voorbeelden)
 - goedgekeurde gebruikersfeedback (lessons)
 
+[Bekijk de volledige LLM-superprompt](/docs/super-prompt) of download daar het ruwe `.md`-bestand.
+
+Wil je meer weten over de opzet en code? Bekijk de repository op [GitHub](https://github.com/jsdaalder/ftm-koppensneller).
+
 ## Hoe gebruik je dit?
 1. Kies het genre.
 2. Upload je concept.

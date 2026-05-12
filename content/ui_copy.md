@@ -45,6 +45,9 @@ Gebruikte bronnen:
 - historische koppen: patronen + 20 representatieve voorbeelden (samenvatting)
 - goedgekeurde gebruikersfeedback (lessons) om veelgemaakte fouten te vermijden
 
+- [Bekijk de volledige LLM-superprompt](/docs/super-prompt) en download daar het ruwe `.md`-bestand
+- [Lees meer op GitHub](https://github.com/jsdaalder/ftm-koppensneller)
+
 Jij uploadt nu je concept als `.md` (uit Google Docs) en kiest het genre. Daarna genereren we meerdere kop-opties in verschillende richtingen. Met jouw feedback sturen we elke volgende ronde bij.
 
 ### future_note

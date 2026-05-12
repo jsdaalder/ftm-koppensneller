@@ -143,7 +143,7 @@ export default function AppPage() {
       });
     })();
     void (async () => {
-      const res = await fetch("/api/page-copy?slug=app&format=html");
+      const res = await fetch("/api/page-copy?slug=app&format=md");
       const json = await res.json().catch(() => ({}));
       if (!active) return;
       if (res.ok && typeof json?.html === "string") setIntroHtml(json.html);

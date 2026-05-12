@@ -2,23 +2,38 @@
 
 De Koppensneller helpt je om **sneller tot een sterke kop** te komen, in rondes. Je uploadt een concept als `.md` (uit Google Docs), kiest het genre en krijgt meerdere koprichtingen. Met jouw feedback scherpen we de volgende ronde aan.
 
-## Waarop is dit gebaseerd?
+De **FTM Koppensneller** is een webtool die met een taalmodel (om precies te zijn: gpt-4.1) en op basis van een concept van je artikel koppen FTM-waardige koppen genereert. Dat doen we in meerdere rondes, na feedback van jou, de gebruiker. 
+
+## Wat is het probleem?
+
+Kunstmatige intelligentie kan journalisten helpen met koppen maken. Dat doen veel FTM'ers ook al en soms werkt dat, maar vaak zijn de suggesties:
+
+- te generiek of “Amerikaans”
+- niet scherp genoeg op de nieuwswaarde
+- niet in FTM-toon (te veel cliché, te weinig concreet, verkeerde focus)
+- onvoldoende consistent (de ene keer raak, de volgende keer mis)
+
+## Waarop deze tool gebaseerd is
+
 We gebruiken een uitgebreide **LLM-superprompt** die is samengesteld op basis van:
 
 - de (compacte) FTM-stijlgids
+
 - de *Comité Cliché* richtlijnen
+
 - de FTM-koppenchecklist
+
 - patronen uit historische koppen (samenvatting + representatieve voorbeelden)
+
 - goedgekeurde gebruikersfeedback (lessons)
 
-[Bekijk de volledige LLM-superprompt](/docs/super-prompt) of download daar het ruwe `.md`-bestand.
+  [Bekijk de volledige LLM-superprompt](/docs/super-prompt) (sowieso nuttig om eens te bekijken, ook zonder deze app te gebruiken).
 
-Wil je meer weten over de opzet en code? Bekijk de repository op [GitHub](https://github.com/jsdaalder/ftm-koppensneller).
+  Wil je meer weten over de opzet en code? Bekijk de repository op [GitHub](https://github.com/jsdaalder/ftm-koppensneller).
 
-## Hoe gebruik je dit?
-1. Kies het genre.
-2. Upload je concept.
-3. Kies de beste koppen en geef feedback.
-4. Klik op **Nieuwe ronde** en herhaal tot je tevreden bent.
-
-> Tip (Google Docs): **File → Download → Markdown (.md)**, en upload daarna die `.md`.
+## Hoe je deze tool gebruikt
+1. Download een `.md`.-versie van je conceptartikel in Google Docs: **File → Download → Markdown (.md)**
+2. Kies het genre in de koppensnellertool.
+3. Upload het `.md`.-bestand.
+4. Kies de beste koppen en geef feedback.
+5. Klik op **Nieuwe ronde** en herhaal tot je tevreden bent.

@@ -568,6 +568,53 @@ input, select, textarea, button {
   margin: 10px 0;
 }
 
+.ftm-doc-accordion {
+  margin: 18px 0 0;
+  border: 1px solid #d4cec2;
+  background: #fffdfa;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.08);
+}
+
+.ftm-doc-accordion summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 14px 18px;
+  font-family: "Arial Narrow", "Avenir Next Condensed", "Franklin Gothic Medium", sans-serif;
+  font-size: 24px;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: #181a1f;
+  font-weight: 900;
+}
+
+.ftm-doc-accordion summary::-webkit-details-marker {
+  display: none;
+}
+
+.ftm-doc-accordion summary::after {
+  content: "+";
+  float: right;
+  color: var(--ftm-red);
+  font-size: 28px;
+  line-height: 0.9;
+}
+
+.ftm-doc-accordion[open] summary::after {
+  content: "\2212";
+}
+
+.ftm-doc-accordion-body {
+  padding: 0 18px 18px;
+}
+
+.ftm-doc-accordion-body > :first-child {
+  margin-top: 0;
+}
+
+.ftm-doc-accordion-body > :last-child {
+  margin-bottom: 0;
+}
+
 .ftm-doc-prose code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.95em;

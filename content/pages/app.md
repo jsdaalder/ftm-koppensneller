@@ -17,11 +17,11 @@ Kunstmatige intelligentie kan journalisten helpen met koppen maken. Dat doen vee
 
 We gebruiken een uitgebreide **LLM-superprompt** die is samengesteld op basis van:
 
-- de (compacte) FTM-stijlgids
+- de (compacte versie van de) [FTM-stijlgids](https://www.spaink.net/wp-content/uploads/FTM-stijlgids.pdf)
 
-- de *Comité Cliché* richtlijnen
+- de [richtlijnen](https://drive.google.com/file/d/1qEB6f_e_wUJ-Przk4HRVUUpETjegsWrD/view?usp=sharing) van *Comité Cliché Weg Ermee* (gemaakt door enkele eindredacteuren van NRC)
 
-- de FTM-koppenchecklist
+- de [FTM-koppenchecklist](https://docs.google.com/document/d/1OlgZ-CfcXJ-VvXIp9tSpursS1giiogVIsAhbfoUmhKw/edit?tab=t.0)
 
 - patronen uit historische koppen (samenvatting + representatieve voorbeelden)
 

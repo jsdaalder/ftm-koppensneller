@@ -18,18 +18,15 @@ Kunstmatige intelligentie kan journalisten helpen met koppen maken. Dat doen vee
 We gebruiken een uitgebreide **LLM-superprompt** die is samengesteld op basis van:
 
 - de (compacte versie van de) [FTM-stijlgids](https://www.spaink.net/wp-content/uploads/FTM-stijlgids.pdf)
-
 - de [richtlijnen](https://drive.google.com/file/d/1qEB6f_e_wUJ-Przk4HRVUUpETjegsWrD/view?usp=sharing) van *Comité Cliché Weg Ermee* (gemaakt door enkele eindredacteuren van NRC)
-
 - de [FTM-koppenchecklist](https://docs.google.com/document/d/1OlgZ-CfcXJ-VvXIp9tSpursS1giiogVIsAhbfoUmhKw/edit?tab=t.0)
-
 - patronen uit historische koppen (samenvatting + representatieve voorbeelden)
+- goedgekeurde gebruikersfeedback
 
-- goedgekeurde gebruikersfeedback (lessons)
 
-  [Bekijk de volledige LLM-superprompt](/docs/super-prompt) (sowieso nuttig om eens te bekijken, ook zonder deze app te gebruiken).
+[Bekijk de volledige LLM-superprompt](/docs/super-prompt) (sowieso nuttig om eens te bekijken, ook zonder deze app te gebruiken).
 
-  Wil je meer weten over de opzet en code? Bekijk de repository op [GitHub](https://github.com/jsdaalder/ftm-koppensneller).
+Wil je meer weten over de opzet en code? Bekijk de repository op [GitHub](https://github.com/jsdaalder/ftm-koppensneller).
 
 ## Hoe je deze tool gebruikt
 1. Download een `.md`.-versie van je conceptartikel in Google Docs: **File → Download → Markdown (.md)**

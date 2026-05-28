@@ -654,6 +654,53 @@ input, select, textarea, button {
   text-decoration: underline;
 }
 
+.ftm-language-toggle {
+  display: inline-flex;
+  border: 1px solid #d4cec2;
+  background: #f2eee7;
+}
+
+.ftm-language-toggle-btn {
+  border: 0;
+  border-right: 1px solid #d4cec2;
+  border-radius: 0;
+  padding: 10px 12px;
+  font-weight: 800;
+  background: transparent;
+  color: #2d313a;
+}
+
+.ftm-language-toggle-btn:last-child {
+  border-right: 0;
+}
+
+.ftm-language-toggle-btn.is-active {
+  background: var(--ftm-red);
+  color: #fff;
+}
+
+.ftm-language-picker {
+  margin: 18px 0;
+  padding: 16px 18px;
+  border: 1px solid #d4cec2;
+  background: #fffdfa;
+}
+
+.ftm-language-picker-title {
+  margin: 0 0 8px;
+  font-family: "Arial Narrow", "Avenir Next Condensed", "Franklin Gothic Medium", sans-serif;
+  font-size: 24px;
+  line-height: 1.1;
+  color: #181a1f;
+}
+
+.ftm-language-picker-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
 @media (max-width: 980px) {
   .ftm-coach-shell {
     grid-template-columns: 1fr;

@@ -14,6 +14,7 @@ const bodySchema = z.object({
   selected_indices: z.array(z.number()).default([]),
   feedback_text: z.string().default(""),
   user_revision_text: z.string().default(""),
+  headline_language: z.enum(["nl", "en"]).default("nl"),
 });
 
 function parseDirectionTags(feedback: string): string[] {
@@ -86,6 +87,7 @@ ${parsed.user_revision_text || "(geen)"}
       genre: session.genre,
       roundNumber,
       feedbackHistory,
+      headlineLanguage: parsed.headline_language,
     });
 
     const directionTags = parseDirectionTags(parsed.feedback_text);
@@ -99,7 +101,7 @@ ${parsed.user_revision_text || "(geen)"}
       user_revision_text: parsed.user_revision_text,
     });
 
-    return NextResponse.json({ round_number: roundNumber, suggestions });
+    return NextResponse.json({ round_number: roundNumber, suggestions, headline_language: parsed.headline_language });
   } catch (err) {
     if (err instanceof Error && err.message === "UNAUTHORIZED") {
       return NextResponse.json({ error: "Not authenticated." }, { status: 401 });

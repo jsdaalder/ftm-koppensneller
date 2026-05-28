@@ -4,10 +4,13 @@ import { useEffect, useState } from "react";
 import { Suggestion } from "@/lib/types";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 
+type HeadlineLanguage = "nl" | "en";
+
 type SessionState = {
   sessionId: string;
   roundNumber: number;
   suggestions: Suggestion[];
+  headlineLanguage: HeadlineLanguage;
 };
 
 type RoundState = {
@@ -30,6 +33,10 @@ type AppCopy = {
 };
 
 const MAX_MD_UPLOAD_BYTES = 512 * 1024;
+
+function headlineLanguageLabel(value: HeadlineLanguage): string {
+  return value === "en" ? "English" : "Nederlands";
+}
 
 function draftKind(name: string): "md" | "unknown" {
   const n = (name || "").toLowerCase();
@@ -100,6 +107,7 @@ export default function AppPage() {
   const [copy, setCopy] = useState<AppCopy>(fallbackAppCopy);
   const [introHtml, setIntroHtml] = useState<string>("");
   const [isCreatorUser, setIsCreatorUser] = useState(false);
+  const [headlineLanguage, setHeadlineLanguage] = useState<HeadlineLanguage | null>(null);
 
   async function logout() {
     const supabase = createSupabaseBrowserClient();
@@ -153,6 +161,13 @@ export default function AppPage() {
     };
   }, []);
 
+  function selectHeadlineLanguage(value: HeadlineLanguage) {
+    setHeadlineLanguage(value);
+    if (session) {
+      setStatus(`Koptaal gewijzigd naar ${headlineLanguageLabel(value)}. De volgende ronde gebruikt deze taal.`);
+    }
+  }
+
   async function sendVerificationCode() {
     if (!ftmEmail) return setVerificationMsg("Vul je FTM e-mailadres in.");
     setVerificationMsg("Code wordt verstuurd...");
@@ -182,6 +197,7 @@ export default function AppPage() {
   }
 
   async function startSession() {
+    if (!headlineLanguage) return setStatus("Kies eerst of je koppen in het Nederlands of in het Engels wilt genereren.");
     if (!draftFile) return setStatus("Selecteer eerst een .md-bestand.");
     {
       const kind = draftKind(draftFile.name);
@@ -199,6 +215,7 @@ export default function AppPage() {
       const form = new FormData();
       form.append("draft", draftFile);
       form.append("genre", genre);
+      form.append("headline_language", headlineLanguage);
       setStatus("Genereren...");
       const res = await fetch("/api/sessions", { method: "POST", body: form });
       const payload = await readResponsePayload(res);
@@ -217,6 +234,7 @@ export default function AppPage() {
         sessionId: String(payload.session_id),
         roundNumber: Number(payload.round_number),
         suggestions: (payload.suggestions as Suggestion[]) ?? [],
+        headlineLanguage: (payload.headline_language === "en" ? "en" : "nl") as HeadlineLanguage,
       });
       const firstRoundNumber = Number(payload.round_number);
       setRounds([
@@ -240,6 +258,7 @@ export default function AppPage() {
 
   async function nextRound() {
     if (!session) return;
+    if (!headlineLanguage) return setStatus("Kies eerst of je koppen in het Nederlands of in het Engels wilt genereren.");
     try {
       setIsGeneratingNextRound(true);
       setStatus("Begrepen. Nieuwe koppen worden gegenereerd...");
@@ -254,6 +273,7 @@ export default function AppPage() {
             selected_indices: selected,
             feedback_text: feedback,
             user_revision_text: "",
+            headline_language: headlineLanguage,
           }),
         },
       );
@@ -287,6 +307,7 @@ export default function AppPage() {
         sessionId: session.sessionId,
         roundNumber: newRoundNumber,
         suggestions: newSuggestions,
+        headlineLanguage: (payload.headline_language === "en" ? "en" : headlineLanguage) as HeadlineLanguage,
       });
       setSelected([]);
       setFeedback("");
@@ -306,8 +327,11 @@ export default function AppPage() {
     const targetSessionId = sessionIdArg || session?.sessionId;
     if (!targetSessionId) return;
     try {
+      const body = headlineLanguage ? JSON.stringify({ headline_language: headlineLanguage }) : undefined;
       const res = await fetch(`/api/sessions/${targetSessionId}/submit-feedback`, {
         method: "POST",
+        headers: body ? { "Content-Type": "application/json" } : undefined,
+        body,
       });
       const payload = await readResponsePayload(res);
       const error = typeof payload.error === "string" ? payload.error : "Kon niet indienen.";
@@ -366,7 +390,23 @@ export default function AppPage() {
                 {copy.title}
               </h1>
             </div>
-            <div style={{ display: "flex", gap: 8 }}>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
+              <div className="ftm-language-toggle" role="group" aria-label="Koptaal">
+                <button
+                  type="button"
+                  className={`ftm-language-toggle-btn ${headlineLanguage === "nl" ? "is-active" : ""}`}
+                  onClick={() => selectHeadlineLanguage("nl")}
+                >
+                  Nederlands
+                </button>
+                <button
+                  type="button"
+                  className={`ftm-language-toggle-btn ${headlineLanguage === "en" ? "is-active" : ""}`}
+                  onClick={() => selectHeadlineLanguage("en")}
+                >
+                  English
+                </button>
+              </div>
               {isCreatorUser && (
                 <a
                   href="/creator/queue"
@@ -379,6 +419,20 @@ export default function AppPage() {
               <button className="ftm-coach-btn ftm-coach-btn-dark" type="button" onClick={logout}>Uitloggen</button>
             </div>
           </div>
+          {!headlineLanguage && (
+            <div className="ftm-language-picker">
+              <p className="ftm-language-picker-title">In welke taal wil je koppen genereren?</p>
+              <p className="ftm-coach-meta">Kies een taal voor deze sessie. Je kunt later bovenaan altijd wisselen.</p>
+              <div className="ftm-language-picker-actions">
+                <button type="button" className="ftm-coach-btn" onClick={() => selectHeadlineLanguage("nl")}>
+                  Nederlands
+                </button>
+                <button type="button" className="ftm-coach-btn ftm-coach-btn-dark" onClick={() => selectHeadlineLanguage("en")}>
+                  English
+                </button>
+              </div>
+            </div>
+          )}
           {introHtml ? (
             <div className="ftm-doc-prose" dangerouslySetInnerHTML={{ __html: introHtml }} />
           ) : (
@@ -395,6 +449,11 @@ export default function AppPage() {
             </>
           )}
           <p className="ftm-coach-meta">{copy.future_note}</p>
+          {headlineLanguage && (
+            <p className="ftm-coach-meta">
+              Koptaal voor nieuwe generaties: <strong>{headlineLanguageLabel(headlineLanguage)}</strong>
+            </p>
+          )}
           <label className="ftm-coach-label">Genre</label>
           <select className="ftm-coach-select" value={genre} onChange={(e) => setGenre(e.target.value)}>
             <option value="nieuws">nieuws</option>
@@ -444,9 +503,14 @@ export default function AppPage() {
       {!requiresFtmVerification && session && (
         <div className="ftm-coach-card">
           <div className="ftm-round-header">
-            <h2 className="ftm-coach-h2" style={{ margin: 0 }}>
-              Ronde {activeRound?.roundNumber ?? session.roundNumber}
-            </h2>
+            <div>
+              <h2 className="ftm-coach-h2" style={{ margin: 0 }}>
+                Ronde {activeRound?.roundNumber ?? session.roundNumber}
+              </h2>
+              <p className="ftm-coach-meta" style={{ marginTop: 6 }}>
+                Huidige koptaal: <strong>{headlineLanguage ? headlineLanguageLabel(headlineLanguage) : headlineLanguageLabel(session.headlineLanguage)}</strong>
+              </p>
+            </div>
             <div className="ftm-round-pills">
               {rounds.map((round) => (
                 <button

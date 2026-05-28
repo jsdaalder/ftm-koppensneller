@@ -25,6 +25,7 @@ type ParsedPayload = {
   profile_id?: string;
   session_id?: string;
   genre?: string;
+  headline_language?: string;
   rounds?: ParsedRound[];
 };
 
@@ -90,6 +91,7 @@ function parsePayload(input: unknown): ParsedPayload {
     profile_id: asString(session.profile_id),
     session_id: asString(session.id),
     genre: asString(session.genre),
+    headline_language: asString(session.headline_language),
     rounds,
   };
 }
@@ -310,7 +312,7 @@ export default function CreatorQueuePage() {
                 <p className="ftm-coach-meta">ID: {item.id}</p>
                 <p className="ftm-coach-meta">User: {item.user_email ?? "-"}</p>
                 <p className="ftm-coach-meta">
-                  Sessie: {payload.session_id ?? "-"} | Profiel: {payload.profile_id ?? "-"} | Genre: {payload.genre ?? "-"}
+                  Sessie: {payload.session_id ?? "-"} | Profiel: {payload.profile_id ?? "-"} | Genre: {payload.genre ?? "-"} | Koptaal: {payload.headline_language || "-"}
                 </p>
 
               <div style={{ display: "grid", gap: 10 }}>

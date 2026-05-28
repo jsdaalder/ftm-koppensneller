@@ -12,6 +12,10 @@ import { assertSameOrigin } from "@/lib/server/security";
 import { enforceDailyGenerationLimit } from "@/lib/server/usage";
 import { errorToMessage } from "@/lib/server/errors";
 
+function parseHeadlineLanguage(input: FormDataEntryValue | null): "nl" | "en" {
+  return input === "en" ? "en" : "nl";
+}
+
 function getDraftKind(filename: string): "md" | "unknown" {
   const name = filename.toLowerCase();
   if (name.endsWith(".md")) return "md";
@@ -28,6 +32,7 @@ export async function POST(req: Request) {
     const formData = await req.formData();
     const file = formData.get("draft");
     const genre = String(formData.get("genre") || "news");
+    const headlineLanguage = parseHeadlineLanguage(formData.get("headline_language"));
     if (!(file instanceof File)) {
       return NextResponse.json({ error: "Upload exactly one draft file (.md)." }, { status: 400 });
     }
@@ -51,6 +56,7 @@ export async function POST(req: Request) {
       genre,
       roundNumber: 1,
       feedbackHistory: "",
+      headlineLanguage,
     });
 
     const admin = createSupabaseAdminClient();
@@ -83,6 +89,7 @@ export async function POST(req: Request) {
       round_number: 1,
       suggestions,
       profile_id: profile.profile_id,
+      headline_language: headlineLanguage,
     });
   } catch (err) {
     if (err instanceof Error && err.message === "UNAUTHORIZED") {

@@ -6,14 +6,21 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { assertSameOrigin } from "@/lib/server/security";
 import { errorToMessage } from "@/lib/server/errors";
 
+function parseHeadlineLanguage(input: unknown): "nl" | "en" {
+  return input === "en" ? "en" : "nl";
+}
+
 export async function POST(
-  _req: Request,
+  req: Request,
   ctx: { params: Promise<{ id: string }> },
 ) {
   try {
-    assertSameOrigin(_req);
+    assertSameOrigin(req);
     const params = await ctx.params;
     const sessionId = params.id;
+    const rawBody = await req.text();
+    const body = rawBody ? JSON.parse(rawBody) as Record<string, unknown> : {};
+    const headlineLanguage = parseHeadlineLanguage(body.headline_language);
     const supabase = await createSupabaseServerClient();
     const {
       data: { user },
@@ -35,7 +42,13 @@ export async function POST(
       .eq("session_id", sessionId)
       .order("round_number", { ascending: true });
 
-    const payload = { session, rounds: rounds ?? [] };
+    const payload = {
+      session: {
+        ...session,
+        headline_language: headlineLanguage,
+      },
+      rounds: rounds ?? [],
+    };
     const { data: existing, error: existingErr } = await admin
       .from("feedback_submissions")
       .select("id,status")

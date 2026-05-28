@@ -2,6 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
+import {
+  HEADLINE_LANGUAGE_PARAM,
+  HeadlineLanguage,
+  readHeadlineLanguageFromStorage,
+  writeHeadlineLanguageToStorage,
+} from "@/lib/headline-language";
 
 const RATE_LIMIT_KEY = "ftm_login_rate_limit_until_ms";
 const DEFAULT_COOLDOWN_MS = 5 * 60 * 1000;
@@ -62,6 +68,21 @@ type LoginCopy = {
   google_button: string;
 };
 
+type LoginLanguageCopy = LoginCopy & {
+  chooser_title: string;
+  chooser_copy: string;
+  chooser_nl_button: string;
+  chooser_en_button: string;
+  choose_language_first: string;
+  email_placeholder: string;
+  cooldown_reset: string;
+  sending_link: string;
+  link_sent: string;
+  google_error: string;
+  allowed_error: string;
+  cooldown_error_prefix: string;
+};
+
 const fallbackLoginCopy: LoginCopy = {
   kicker: "FTM Koppensneller",
   title: "Maak sterkere koppen, met redactionele scherpte.",
@@ -73,6 +94,29 @@ const fallbackLoginCopy: LoginCopy = {
   google_button: "Inloggen met Google",
 };
 
+const englishLoginCopy: LoginLanguageCopy = {
+  kicker: "FTM Headline Coach",
+  title: "Sharper headlines, with editorial discipline.",
+  hero_copy: "Internal tool for editors: generate headlines in rounds, give feedback, and improve what works.",
+  accent: "Investigative journalism",
+  form_title: "Log in",
+  form_copy: "Use your approved FTM email address. You will receive a magic link immediately.",
+  magic_link_button: "Send magic link",
+  google_button: "Log in with Google",
+  chooser_title: "Choose your headline language",
+  chooser_copy: "Pick the language you want to use for headline generation before continuing.",
+  chooser_nl_button: "Use Dutch",
+  chooser_en_button: "Use English",
+  choose_language_first: "Choose Dutch or English before continuing.",
+  email_placeholder: "name@ftm.nl",
+  cooldown_reset: "Reset timer",
+  sending_link: "Sending magic link...",
+  link_sent: "Check your email for the magic link.",
+  google_error: "Login error (Google):",
+  allowed_error: "Only @ftm.nl email addresses are allowed for magic link login.",
+  cooldown_error_prefix: "You can try again in",
+};
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [msg, setMsg] = useState("");
@@ -80,9 +124,30 @@ export default function LoginPage() {
   const [nowMs, setNowMs] = useState(Date.now());
   const [copy, setCopy] = useState<LoginCopy>(fallbackLoginCopy);
   const [isSendingLink, setIsSendingLink] = useState(false);
+  const [headlineLanguage, setHeadlineLanguage] = useState<HeadlineLanguage | null>(null);
   const googleLoginEnabled = process.env.NEXT_PUBLIC_ENABLE_GOOGLE_LOGIN === "true";
+  const isEnglishUi = headlineLanguage === "en";
+  const displayedCopy: LoginLanguageCopy = isEnglishUi
+    ? englishLoginCopy
+    : {
+        ...copy,
+        chooser_title: "Kies de taal voor je koppen",
+        chooser_copy: "Selecteer eerst in welke taal je headlines wilt genereren.",
+        chooser_nl_button: "Ga verder in het Nederlands",
+        chooser_en_button: "Continue in English",
+        choose_language_first: "Kies eerst Nederlands of Engels voordat je doorgaat.",
+        email_placeholder: "naam@ftm.nl",
+        cooldown_reset: "Reset timer",
+        sending_link: "Magic link wordt verstuurd...",
+        link_sent: "Controleer je e-mail voor de magic link.",
+        google_error: "Inlogfout (Google):",
+        allowed_error: "Alleen @ftm.nl e-mailadressen zijn toegestaan voor magic link login.",
+        cooldown_error_prefix: "Je kunt over",
+      };
 
   useEffect(() => {
+    const storedLanguage = readHeadlineLanguageFromStorage();
+    setHeadlineLanguage(storedLanguage);
     const stored = readCooldownUntil();
     if (stored > 0 && stored <= Date.now()) {
       clearCooldown();
@@ -103,7 +168,9 @@ export default function LoginPage() {
       try {
         const supabase = createSupabaseBrowserClient();
         const { data } = await supabase.auth.getUser();
-        if (data?.user) window.location.href = "/app";
+        if (data?.user && storedLanguage) {
+          window.location.href = `/app?${HEADLINE_LANGUAGE_PARAM}=${storedLanguage}`;
+        }
       } catch {
         // ignore
       }
@@ -135,15 +202,35 @@ export default function LoginPage() {
 
   function getAuthRedirectTo(): string {
     const origin = window.location.origin;
+    const nextTarget = headlineLanguage
+      ? `/app?${HEADLINE_LANGUAGE_PARAM}=${headlineLanguage}`
+      : "/app";
     if (configuredAppUrl) {
       const base = configuredAppUrl.replace(/\/+$/, "");
-      return `${base}/auth/callback?next=/app`;
+      return `${base}/auth/callback?next=${encodeURIComponent(nextTarget)}`;
     }
-    return `${origin}/auth/callback?next=/app`;
+    return `${origin}/auth/callback?next=${encodeURIComponent(nextTarget)}`;
+  }
+
+  function chooseLanguage(value: HeadlineLanguage) {
+    writeHeadlineLanguageToStorage(value);
+    setHeadlineLanguage(value);
+    setMsg("");
+    void (async () => {
+      const supabase = createSupabaseBrowserClient();
+      const { data } = await supabase.auth.getUser();
+      if (data?.user) {
+        window.location.href = `/app?${HEADLINE_LANGUAGE_PARAM}=${value}`;
+      }
+    })();
   }
 
   async function onLogin(e: React.FormEvent) {
     e.preventDefault();
+    if (!headlineLanguage) {
+      setMsg(displayedCopy.choose_language_first);
+      return;
+    }
     if (isSendingLink) return;
     const allowRes = await fetch("/api/auth/magiclink/allowed", {
       method: "POST",
@@ -152,20 +239,20 @@ export default function LoginPage() {
     });
     const allowJson = await allowRes.json().catch(() => ({}));
     if (!allowRes.ok || allowJson.allowed !== true) {
-      setMsg("Alleen @ftm.nl e-mailadressen zijn toegestaan voor magic link login.");
+      setMsg(displayedCopy.allowed_error);
       return;
     }
     if (isCoolingDown) {
-      setMsg(`Je kunt over ${formatRemaining(remainingMs)} opnieuw proberen.`);
+      setMsg(`${displayedCopy.cooldown_error_prefix} ${formatRemaining(remainingMs)} opnieuw proberen.`);
       return;
     }
     const supabase = createSupabaseBrowserClient();
     const redirectTo = getAuthRedirectTo();
     setIsSendingLink(true);
-    setMsg("Magic link wordt verstuurd...");
+    setMsg(displayedCopy.sending_link);
     const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: redirectTo } });
     if (!error) {
-      setMsg("Controleer je e-mail voor de magic link.");
+      setMsg(displayedCopy.link_sent);
       setIsSendingLink(false);
       return;
     }
@@ -189,6 +276,10 @@ export default function LoginPage() {
   }
 
   async function onGoogleLogin() {
+    if (!headlineLanguage) {
+      setMsg(displayedCopy.choose_language_first);
+      return;
+    }
     clearCooldown();
     setCooldownUntilMs(0);
     const supabase = createSupabaseBrowserClient();
@@ -198,7 +289,7 @@ export default function LoginPage() {
       options: { redirectTo },
     });
     if (error) {
-      setMsg(`Inlogfout (Google): ${error.message}`);
+      setMsg(`${displayedCopy.google_error} ${error.message}`);
     }
   }
 
@@ -211,45 +302,74 @@ export default function LoginPage() {
             alt="Follow the Money"
             className="ftm-login-logo"
           />
-          <p className="ftm-login-kicker">{copy.kicker}</p>
-          <h1 className="ftm-login-title">{copy.title}</h1>
-          <p className="ftm-login-copy">{copy.hero_copy}</p>
+          <p className="ftm-login-kicker">{displayedCopy.kicker}</p>
+          <h1 className="ftm-login-title">{displayedCopy.title}</h1>
+          <p className="ftm-login-copy">{displayedCopy.hero_copy}</p>
           <div className="ftm-login-accent-row">
             <span className="ftm-login-dot" />
-            <span>{copy.accent}</span>
+            <span>{displayedCopy.accent}</span>
           </div>
         </div>
       </section>
 
       <section className="ftm-login-panel">
         <div className="ftm-login-card">
-          <h2 className="ftm-login-form-title">{copy.form_title}</h2>
-          <p className="ftm-login-form-copy">{copy.form_copy}</p>
+          <div className="ftm-login-language-picker">
+            <p className="ftm-login-language-title">{displayedCopy.chooser_title}</p>
+            <p className="ftm-login-form-copy">{displayedCopy.chooser_copy}</p>
+            <div className="ftm-login-language-actions">
+              <button
+                type="button"
+                className={`ftm-button ${headlineLanguage === "nl" ? "ftm-login-language-active" : ""}`}
+                onClick={() => chooseLanguage("nl")}
+              >
+                {displayedCopy.chooser_nl_button}
+              </button>
+              <button
+                type="button"
+                className={`ftm-button ftm-login-language-dark ${headlineLanguage === "en" ? "ftm-login-language-active" : ""}`}
+                onClick={() => chooseLanguage("en")}
+              >
+                {displayedCopy.chooser_en_button}
+              </button>
+            </div>
+          </div>
+
+          <h2 className="ftm-login-form-title">{displayedCopy.form_title}</h2>
+          <p className="ftm-login-form-copy">{displayedCopy.form_copy}</p>
           <form onSubmit={onLogin} className="ftm-login-form">
           <input
             type="email"
-            placeholder="name@ftm.nl"
+            placeholder={displayedCopy.email_placeholder}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
             className="ftm-input"
           />
-          <button type="submit" disabled={isCoolingDown || isSendingLink} className="ftm-button">
+          <button type="submit" disabled={isCoolingDown || isSendingLink || !headlineLanguage} className="ftm-button">
             {isSendingLink
-              ? "Bezig met versturen..."
+              ? (isEnglishUi ? "Sending..." : "Bezig met versturen...")
               : isCoolingDown
-                ? `Wacht ${formatRemaining(remainingMs)}`
-                : copy.magic_link_button}
+                ? (isEnglishUi ? `Wait ${formatRemaining(remainingMs)}` : `Wacht ${formatRemaining(remainingMs)}`)
+                : displayedCopy.magic_link_button}
           </button>
           {googleLoginEnabled && (
-            <button type="button" onClick={onGoogleLogin} className="ftm-button" style={{ background: "#2a2d33" }}>
-              {copy.google_button}
+            <button
+              type="button"
+              onClick={onGoogleLogin}
+              disabled={!headlineLanguage}
+              className="ftm-button"
+              style={{ background: "#2a2d33" }}
+            >
+              {displayedCopy.google_button}
             </button>
           )}
           </form>
         {isCoolingDown && (
             <p className="ftm-login-meta">
-              Te veel verzoeken. Resterende tijd: {formatRemaining(remainingMs)}.{" "}
+              {isEnglishUi
+                ? `Too many requests. Remaining time: ${formatRemaining(remainingMs)}. `
+                : `Te veel verzoeken. Resterende tijd: ${formatRemaining(remainingMs)}. `}
               <button
                 type="button"
                 onClick={() => {
@@ -259,7 +379,7 @@ export default function LoginPage() {
                 }}
                 style={{ marginLeft: 8, background: "transparent", border: "none", color: "inherit", textDecoration: "underline", cursor: "pointer" }}
               >
-                Reset timer
+                {displayedCopy.cooldown_reset}
               </button>
             </p>
           )}

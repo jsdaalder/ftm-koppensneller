@@ -3,8 +3,13 @@
 import { useEffect, useState } from "react";
 import { Suggestion } from "@/lib/types";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
-
-type HeadlineLanguage = "nl" | "en";
+import {
+  HEADLINE_LANGUAGE_PARAM,
+  HeadlineLanguage,
+  readHeadlineLanguageFromStorage,
+  readHeadlineLanguageFromUrl,
+  writeHeadlineLanguageToStorage,
+} from "@/lib/headline-language";
 
 type SessionState = {
   sessionId: string;
@@ -108,6 +113,7 @@ export default function AppPage() {
   const [introHtml, setIntroHtml] = useState<string>("");
   const [isCreatorUser, setIsCreatorUser] = useState(false);
   const [headlineLanguage, setHeadlineLanguage] = useState<HeadlineLanguage | null>(null);
+  const [languageResolved, setLanguageResolved] = useState(false);
 
   async function logout() {
     const supabase = createSupabaseBrowserClient();
@@ -117,6 +123,20 @@ export default function AppPage() {
 
   useEffect(() => {
     let active = true;
+    const currentUrl = new URL(window.location.href);
+    const urlLanguage = readHeadlineLanguageFromUrl(currentUrl);
+    const storedLanguage = readHeadlineLanguageFromStorage();
+    const resolvedLanguage = urlLanguage ?? storedLanguage;
+    if (resolvedLanguage) {
+      writeHeadlineLanguageToStorage(resolvedLanguage);
+      setHeadlineLanguage(resolvedLanguage);
+    }
+    if (urlLanguage) {
+      currentUrl.searchParams.delete(HEADLINE_LANGUAGE_PARAM);
+      window.history.replaceState({}, "", `${currentUrl.pathname}${currentUrl.search}${currentUrl.hash}`);
+    }
+    setLanguageResolved(true);
+
     async function loadVerificationState() {
       const res = await fetch("/api/auth/ftm/status");
       const json = await res.json();
@@ -160,13 +180,6 @@ export default function AppPage() {
       active = false;
     };
   }, []);
-
-  function selectHeadlineLanguage(value: HeadlineLanguage) {
-    setHeadlineLanguage(value);
-    if (session) {
-      setStatus(`Koptaal gewijzigd naar ${headlineLanguageLabel(value)}. De volgende ronde gebruikt deze taal.`);
-    }
-  }
 
   async function sendVerificationCode() {
     if (!ftmEmail) return setVerificationMsg("Vul je FTM e-mailadres in.");
@@ -345,6 +358,14 @@ export default function AppPage() {
     }
   }
 
+  const currentHeadlineLanguage = headlineLanguage ?? session?.headlineLanguage ?? null;
+
+  useEffect(() => {
+    if (!loadingVerification && !requiresFtmVerification && languageResolved && !currentHeadlineLanguage && !session) {
+      window.location.href = "/login";
+    }
+  }, [currentHeadlineLanguage, languageResolved, loadingVerification, requiresFtmVerification, session]);
+
   return (
     <main className="ftm-tool-shell">
       <section className="ftm-tool-panel">
@@ -377,7 +398,7 @@ export default function AppPage() {
         </div>
       )}
 
-      {!requiresFtmVerification && (
+      {!requiresFtmVerification && languageResolved && currentHeadlineLanguage && (
         <div className="ftm-coach-card">
           <div className="ftm-coach-row">
             <div className="ftm-coach-row" style={{ gap: 14 }}>
@@ -391,22 +412,6 @@ export default function AppPage() {
               </h1>
             </div>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
-              <div className="ftm-language-toggle" role="group" aria-label="Koptaal">
-                <button
-                  type="button"
-                  className={`ftm-language-toggle-btn ${headlineLanguage === "nl" ? "is-active" : ""}`}
-                  onClick={() => selectHeadlineLanguage("nl")}
-                >
-                  Nederlands
-                </button>
-                <button
-                  type="button"
-                  className={`ftm-language-toggle-btn ${headlineLanguage === "en" ? "is-active" : ""}`}
-                  onClick={() => selectHeadlineLanguage("en")}
-                >
-                  English
-                </button>
-              </div>
               {isCreatorUser && (
                 <a
                   href="/creator/queue"
@@ -419,20 +424,6 @@ export default function AppPage() {
               <button className="ftm-coach-btn ftm-coach-btn-dark" type="button" onClick={logout}>Uitloggen</button>
             </div>
           </div>
-          {!headlineLanguage && (
-            <div className="ftm-language-picker">
-              <p className="ftm-language-picker-title">In welke taal wil je koppen genereren?</p>
-              <p className="ftm-coach-meta">Kies een taal voor deze sessie. Je kunt later bovenaan altijd wisselen.</p>
-              <div className="ftm-language-picker-actions">
-                <button type="button" className="ftm-coach-btn" onClick={() => selectHeadlineLanguage("nl")}>
-                  Nederlands
-                </button>
-                <button type="button" className="ftm-coach-btn ftm-coach-btn-dark" onClick={() => selectHeadlineLanguage("en")}>
-                  English
-                </button>
-              </div>
-            </div>
-          )}
           {introHtml ? (
             <div className="ftm-doc-prose" dangerouslySetInnerHTML={{ __html: introHtml }} />
           ) : (
@@ -449,11 +440,9 @@ export default function AppPage() {
             </>
           )}
           <p className="ftm-coach-meta">{copy.future_note}</p>
-          {headlineLanguage && (
-            <p className="ftm-coach-meta">
-              Koptaal voor nieuwe generaties: <strong>{headlineLanguageLabel(headlineLanguage)}</strong>
-            </p>
-          )}
+          <p className="ftm-coach-meta">
+            Koptaal voor deze sessie: <strong>{headlineLanguageLabel(currentHeadlineLanguage)}</strong>
+          </p>
           <label className="ftm-coach-label">Genre</label>
           <select className="ftm-coach-select" value={genre} onChange={(e) => setGenre(e.target.value)}>
             <option value="nieuws">nieuws</option>
@@ -508,7 +497,7 @@ export default function AppPage() {
                 Ronde {activeRound?.roundNumber ?? session.roundNumber}
               </h2>
               <p className="ftm-coach-meta" style={{ marginTop: 6 }}>
-                Huidige koptaal: <strong>{headlineLanguage ? headlineLanguageLabel(headlineLanguage) : headlineLanguageLabel(session.headlineLanguage)}</strong>
+                Huidige koptaal: <strong>{currentHeadlineLanguage ? headlineLanguageLabel(currentHeadlineLanguage) : headlineLanguageLabel(session.headlineLanguage)}</strong>
               </p>
             </div>
             <div className="ftm-round-pills">

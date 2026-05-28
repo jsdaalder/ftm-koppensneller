@@ -69,11 +69,7 @@ type LoginCopy = {
 };
 
 type LoginLanguageCopy = LoginCopy & {
-  chooser_title: string;
-  chooser_copy: string;
-  chooser_nl_button: string;
-  chooser_en_button: string;
-  choose_language_first: string;
+  switch_language_button: string;
   email_placeholder: string;
   cooldown_reset: string;
   sending_link: string;
@@ -94,7 +90,19 @@ const fallbackLoginCopy: LoginCopy = {
   google_button: "Inloggen met Google",
 };
 
-const englishLoginCopy: LoginLanguageCopy = {
+const fallbackDutchLandingCopy: LoginLanguageCopy = {
+  ...fallbackLoginCopy,
+  switch_language_button: "English",
+  email_placeholder: "naam@ftm.nl",
+  cooldown_reset: "Reset timer",
+  sending_link: "Magic link wordt verstuurd...",
+  link_sent: "Controleer je e-mail voor de magic link.",
+  google_error: "Inlogfout (Google):",
+  allowed_error: "Alleen @ftm.nl e-mailadressen zijn toegestaan voor magic link login.",
+  cooldown_error_prefix: "Je kunt over",
+};
+
+const fallbackEnglishLoginCopy: LoginLanguageCopy = {
   kicker: "FTM Headline Coach",
   title: "Sharper headlines, with editorial discipline.",
   hero_copy: "Internal tool for editors: generate headlines in rounds, give feedback, and improve what works.",
@@ -103,11 +111,7 @@ const englishLoginCopy: LoginLanguageCopy = {
   form_copy: "Use your approved FTM email address. You will receive a magic link immediately.",
   magic_link_button: "Send magic link",
   google_button: "Log in with Google",
-  chooser_title: "Choose your headline language",
-  chooser_copy: "Pick the language you want to use for headline generation before continuing.",
-  chooser_nl_button: "Use Dutch",
-  chooser_en_button: "Use English",
-  choose_language_first: "Choose Dutch or English before continuing.",
+  switch_language_button: "Nederlands",
   email_placeholder: "name@ftm.nl",
   cooldown_reset: "Reset timer",
   sending_link: "Sending magic link...",
@@ -122,32 +126,21 @@ export default function LoginPage() {
   const [msg, setMsg] = useState("");
   const [cooldownUntilMs, setCooldownUntilMs] = useState(0);
   const [nowMs, setNowMs] = useState(Date.now());
-  const [copy, setCopy] = useState<LoginCopy>(fallbackLoginCopy);
+  const [loginCopy, setLoginCopy] = useState<LoginLanguageCopy>(fallbackDutchLandingCopy);
+  const [englishCopy, setEnglishCopy] = useState<LoginLanguageCopy>(fallbackEnglishLoginCopy);
   const [isSendingLink, setIsSendingLink] = useState(false);
-  const [headlineLanguage, setHeadlineLanguage] = useState<HeadlineLanguage | null>(null);
+  const [headlineLanguage, setHeadlineLanguage] = useState<HeadlineLanguage>("nl");
   const googleLoginEnabled = process.env.NEXT_PUBLIC_ENABLE_GOOGLE_LOGIN === "true";
   const isEnglishUi = headlineLanguage === "en";
   const displayedCopy: LoginLanguageCopy = isEnglishUi
-    ? englishLoginCopy
-    : {
-        ...copy,
-        chooser_title: "Kies de taal voor je koppen",
-        chooser_copy: "Selecteer eerst in welke taal je headlines wilt genereren.",
-        chooser_nl_button: "Ga verder in het Nederlands",
-        chooser_en_button: "Continue in English",
-        choose_language_first: "Kies eerst Nederlands of Engels voordat je doorgaat.",
-        email_placeholder: "naam@ftm.nl",
-        cooldown_reset: "Reset timer",
-        sending_link: "Magic link wordt verstuurd...",
-        link_sent: "Controleer je e-mail voor de magic link.",
-        google_error: "Inlogfout (Google):",
-        allowed_error: "Alleen @ftm.nl e-mailadressen zijn toegestaan voor magic link login.",
-        cooldown_error_prefix: "Je kunt over",
-      };
+    ? englishCopy
+    : loginCopy;
 
   useEffect(() => {
     const storedLanguage = readHeadlineLanguageFromStorage();
-    setHeadlineLanguage(storedLanguage);
+    const resolvedLanguage = storedLanguage ?? "nl";
+    writeHeadlineLanguageToStorage(resolvedLanguage);
+    setHeadlineLanguage(resolvedLanguage);
     const stored = readCooldownUntil();
     if (stored > 0 && stored <= Date.now()) {
       clearCooldown();
@@ -168,8 +161,8 @@ export default function LoginPage() {
       try {
         const supabase = createSupabaseBrowserClient();
         const { data } = await supabase.auth.getUser();
-        if (data?.user && storedLanguage) {
-          window.location.href = `/app?${HEADLINE_LANGUAGE_PARAM}=${storedLanguage}`;
+        if (data?.user) {
+          window.location.href = `/app?${HEADLINE_LANGUAGE_PARAM}=${resolvedLanguage}`;
         }
       } catch {
         // ignore
@@ -180,17 +173,48 @@ export default function LoginPage() {
       const res = await fetch("/api/ui-copy");
       const json = await res.json().catch(() => ({}));
       const login = json?.copy?.login;
-      if (!login) return;
-      setCopy({
-        kicker: String(login.kicker || fallbackLoginCopy.kicker),
-        title: String(login.title || fallbackLoginCopy.title),
-        hero_copy: String(login.hero_copy || fallbackLoginCopy.hero_copy),
-        accent: String(login.accent || fallbackLoginCopy.accent),
-        form_title: String(login.form_title || fallbackLoginCopy.form_title),
-        form_copy: String(login.form_copy || fallbackLoginCopy.form_copy),
-        magic_link_button: String(login.magic_link_button || fallbackLoginCopy.magic_link_button),
-        google_button: String(login.google_button || fallbackLoginCopy.google_button),
-      });
+      const loginEn = json?.copy?.login_en;
+      if (login) {
+        const nextDutch: LoginLanguageCopy = {
+          kicker: String(login.kicker || fallbackDutchLandingCopy.kicker),
+          title: String(login.title || fallbackDutchLandingCopy.title),
+          hero_copy: String(login.hero_copy || fallbackDutchLandingCopy.hero_copy),
+          accent: String(login.accent || fallbackDutchLandingCopy.accent),
+          form_title: String(login.form_title || fallbackDutchLandingCopy.form_title),
+          form_copy: String(login.form_copy || fallbackDutchLandingCopy.form_copy),
+          magic_link_button: String(login.magic_link_button || fallbackDutchLandingCopy.magic_link_button),
+          google_button: String(login.google_button || fallbackDutchLandingCopy.google_button),
+          switch_language_button: String(login.switch_language_button || fallbackDutchLandingCopy.switch_language_button),
+          email_placeholder: String(login.email_placeholder || fallbackDutchLandingCopy.email_placeholder),
+          cooldown_reset: String(login.cooldown_reset || fallbackDutchLandingCopy.cooldown_reset),
+          sending_link: String(login.sending_link || fallbackDutchLandingCopy.sending_link),
+          link_sent: String(login.link_sent || fallbackDutchLandingCopy.link_sent),
+          google_error: String(login.google_error || fallbackDutchLandingCopy.google_error),
+          allowed_error: String(login.allowed_error || fallbackDutchLandingCopy.allowed_error),
+          cooldown_error_prefix: String(login.cooldown_error_prefix || fallbackDutchLandingCopy.cooldown_error_prefix),
+        };
+        setLoginCopy(nextDutch);
+      }
+      if (loginEn) {
+        setEnglishCopy({
+          kicker: String(loginEn.kicker || fallbackEnglishLoginCopy.kicker),
+          title: String(loginEn.title || fallbackEnglishLoginCopy.title),
+          hero_copy: String(loginEn.hero_copy || fallbackEnglishLoginCopy.hero_copy),
+          accent: String(loginEn.accent || fallbackEnglishLoginCopy.accent),
+          form_title: String(loginEn.form_title || fallbackEnglishLoginCopy.form_title),
+          form_copy: String(loginEn.form_copy || fallbackEnglishLoginCopy.form_copy),
+          magic_link_button: String(loginEn.magic_link_button || fallbackEnglishLoginCopy.magic_link_button),
+          google_button: String(loginEn.google_button || fallbackEnglishLoginCopy.google_button),
+          switch_language_button: String(loginEn.switch_language_button || fallbackEnglishLoginCopy.switch_language_button),
+          email_placeholder: String(loginEn.email_placeholder || fallbackEnglishLoginCopy.email_placeholder),
+          cooldown_reset: String(loginEn.cooldown_reset || fallbackEnglishLoginCopy.cooldown_reset),
+          sending_link: String(loginEn.sending_link || fallbackEnglishLoginCopy.sending_link),
+          link_sent: String(loginEn.link_sent || fallbackEnglishLoginCopy.link_sent),
+          google_error: String(loginEn.google_error || fallbackEnglishLoginCopy.google_error),
+          allowed_error: String(loginEn.allowed_error || fallbackEnglishLoginCopy.allowed_error),
+          cooldown_error_prefix: String(loginEn.cooldown_error_prefix || fallbackEnglishLoginCopy.cooldown_error_prefix),
+        });
+      }
     })();
 
     return () => window.clearInterval(id);
@@ -227,10 +251,6 @@ export default function LoginPage() {
 
   async function onLogin(e: React.FormEvent) {
     e.preventDefault();
-    if (!headlineLanguage) {
-      setMsg(displayedCopy.choose_language_first);
-      return;
-    }
     if (isSendingLink) return;
     const allowRes = await fetch("/api/auth/magiclink/allowed", {
       method: "POST",
@@ -276,10 +296,6 @@ export default function LoginPage() {
   }
 
   async function onGoogleLogin() {
-    if (!headlineLanguage) {
-      setMsg(displayedCopy.choose_language_first);
-      return;
-    }
     clearCooldown();
     setCooldownUntilMs(0);
     const supabase = createSupabaseBrowserClient();
@@ -314,28 +330,16 @@ export default function LoginPage() {
 
       <section className="ftm-login-panel">
         <div className="ftm-login-card">
-          <div className="ftm-login-language-picker">
-            <p className="ftm-login-language-title">{displayedCopy.chooser_title}</p>
-            <p className="ftm-login-form-copy">{displayedCopy.chooser_copy}</p>
-            <div className="ftm-login-language-actions">
-              <button
-                type="button"
-                className={`ftm-button ${headlineLanguage === "nl" ? "ftm-login-language-active" : ""}`}
-                onClick={() => chooseLanguage("nl")}
-              >
-                {displayedCopy.chooser_nl_button}
-              </button>
-              <button
-                type="button"
-                className={`ftm-button ftm-login-language-dark ${headlineLanguage === "en" ? "ftm-login-language-active" : ""}`}
-                onClick={() => chooseLanguage("en")}
-              >
-                {displayedCopy.chooser_en_button}
-              </button>
-            </div>
+          <div className="ftm-login-form-header">
+            <h2 className="ftm-login-form-title">{displayedCopy.form_title}</h2>
+            <button
+              type="button"
+              className="ftm-login-language-switch"
+              onClick={() => chooseLanguage(isEnglishUi ? "nl" : "en")}
+            >
+              {displayedCopy.switch_language_button}
+            </button>
           </div>
-
-          <h2 className="ftm-login-form-title">{displayedCopy.form_title}</h2>
           <p className="ftm-login-form-copy">{displayedCopy.form_copy}</p>
           <form onSubmit={onLogin} className="ftm-login-form">
           <input
@@ -346,7 +350,7 @@ export default function LoginPage() {
             required
             className="ftm-input"
           />
-          <button type="submit" disabled={isCoolingDown || isSendingLink || !headlineLanguage} className="ftm-button">
+          <button type="submit" disabled={isCoolingDown || isSendingLink} className="ftm-button">
             {isSendingLink
               ? (isEnglishUi ? "Sending..." : "Bezig met versturen...")
               : isCoolingDown
@@ -357,7 +361,6 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={onGoogleLogin}
-              disabled={!headlineLanguage}
               className="ftm-button"
               style={{ background: "#2a2d33" }}
             >

@@ -139,34 +139,21 @@ input, select, textarea, button {
   line-height: 1.4;
 }
 
-.ftm-login-language-picker {
-  display: grid;
-  gap: 10px;
-  border-bottom: 1px solid #d4cec2;
-  padding-bottom: 18px;
-  margin-bottom: 18px;
-}
-
-.ftm-login-language-title {
-  margin: 0;
-  font-family: "Arial Narrow", "Avenir Next Condensed", "Franklin Gothic Medium", sans-serif;
-  font-size: 28px;
-  line-height: 1.05;
-  color: #181a1f;
-}
-
-.ftm-login-language-actions {
+.ftm-login-form-header {
   display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
 }
 
-.ftm-login-language-dark {
-  background: #2a2d33;
-}
-
-.ftm-login-language-active {
-  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.92);
+.ftm-login-language-switch {
+  border: 1px solid #b9b2a6;
+  border-radius: 0;
+  padding: 8px 10px;
+  background: #fff;
+  color: #2a2d33;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .ftm-login-form {

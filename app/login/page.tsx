@@ -41,19 +41,19 @@ function parseCooldownFromError(message: string): number | null {
   return null;
 }
 
-function mapLoginErrorParam(errorCode: string): string {
+function mapLoginErrorParam(errorCode: string, copy: LoginLanguageCopy): string {
   switch (errorCode) {
     case "no_access_role":
-      return "Je account heeft nog geen toegang. Neem contact op met de beheerder.";
+      return copy.no_access_error;
     case "oauth_callback_failed":
-      return "Inloggen is mislukt tijdens de verificatie. Probeer opnieuw.";
+      return copy.oauth_callback_error;
     case "otp_callback_failed":
-      return "Verificatie via magic link is mislukt. Vraag een nieuwe link aan.";
+      return copy.otp_callback_error;
     case "missing_code":
     case "missing_auth_callback_params":
-      return "Ongeldige of onvolledige inloglink. Vraag een nieuwe link aan.";
+      return copy.invalid_link_error;
     default:
-      return `Inlogfout: ${errorCode}`;
+      return `${copy.error_prefix} ${errorCode}`;
   }
 }
 
@@ -77,6 +77,17 @@ type LoginLanguageCopy = LoginCopy & {
   google_error: string;
   allowed_error: string;
   cooldown_error_prefix: string;
+  rate_limit_error: string;
+  rate_limit_suffix: string;
+  cooldown_status_prefix: string;
+  sending_button: string;
+  waiting_button_prefix: string;
+  error_prefix: string;
+  cooldown_error_suffix: string;
+  no_access_error: string;
+  oauth_callback_error: string;
+  otp_callback_error: string;
+  invalid_link_error: string;
 };
 
 const fallbackLoginCopy: LoginCopy = {
@@ -100,6 +111,17 @@ const fallbackDutchLandingCopy: LoginLanguageCopy = {
   google_error: "Inlogfout (Google):",
   allowed_error: "Alleen @ftm.nl e-mailadressen zijn toegestaan voor magic link login.",
   cooldown_error_prefix: "Je kunt over",
+  rate_limit_error: "Te veel aanvragen. Probeer het over",
+  rate_limit_suffix: "opnieuw.",
+  cooldown_status_prefix: "Te veel verzoeken. Resterende tijd:",
+  sending_button: "Bezig met versturen...",
+  waiting_button_prefix: "Wacht",
+  error_prefix: "Inlogfout:",
+  cooldown_error_suffix: "opnieuw proberen.",
+  no_access_error: "Je account heeft nog geen toegang. Neem contact op met de beheerder.",
+  oauth_callback_error: "Inloggen is mislukt tijdens de verificatie. Probeer opnieuw.",
+  otp_callback_error: "Verificatie via magic link is mislukt. Vraag een nieuwe link aan.",
+  invalid_link_error: "Ongeldige of onvolledige inloglink. Vraag een nieuwe link aan.",
 };
 
 const fallbackEnglishLoginCopy: LoginLanguageCopy = {
@@ -118,7 +140,18 @@ const fallbackEnglishLoginCopy: LoginLanguageCopy = {
   link_sent: "Check your email for the magic link.",
   google_error: "Login error (Google):",
   allowed_error: "Only @ftm.nl email addresses are allowed for magic link login.",
-  cooldown_error_prefix: "You can try again in",
+  cooldown_error_prefix: "Please wait",
+  rate_limit_error: "Too many requests. Try again in",
+  rate_limit_suffix: ".",
+  cooldown_status_prefix: "Too many requests. Remaining time:",
+  sending_button: "Sending...",
+  waiting_button_prefix: "Wait",
+  error_prefix: "Login error:",
+  cooldown_error_suffix: "before trying again.",
+  no_access_error: "Your account does not have access yet. Contact the administrator.",
+  oauth_callback_error: "Login failed during verification. Please try again.",
+  otp_callback_error: "Magic-link verification failed. Request a new link.",
+  invalid_link_error: "Invalid or incomplete login link. Request a new link.",
 };
 
 export default function LoginPage() {
@@ -154,7 +187,7 @@ export default function LoginPage() {
     const errorCode = params.get("error");
     const errorId = params.get("error_id");
     if (errorCode) {
-      const message = mapLoginErrorParam(errorCode);
+      const message = mapLoginErrorParam(errorCode, resolvedLanguage === "en" ? fallbackEnglishLoginCopy : fallbackDutchLandingCopy);
       setMsg(errorId ? `${message} (diagnostic ID: ${errorId})` : message);
     }
 
@@ -194,6 +227,17 @@ export default function LoginPage() {
           google_error: String(login.google_error || fallbackDutchLandingCopy.google_error),
           allowed_error: String(login.allowed_error || fallbackDutchLandingCopy.allowed_error),
           cooldown_error_prefix: String(login.cooldown_error_prefix || fallbackDutchLandingCopy.cooldown_error_prefix),
+          rate_limit_error: String(login.rate_limit_error || fallbackDutchLandingCopy.rate_limit_error),
+          rate_limit_suffix: String(login.rate_limit_suffix || fallbackDutchLandingCopy.rate_limit_suffix),
+          cooldown_status_prefix: String(login.cooldown_status_prefix || fallbackDutchLandingCopy.cooldown_status_prefix),
+          sending_button: String(login.sending_button || fallbackDutchLandingCopy.sending_button),
+          waiting_button_prefix: String(login.waiting_button_prefix || fallbackDutchLandingCopy.waiting_button_prefix),
+          error_prefix: String(login.error_prefix || fallbackDutchLandingCopy.error_prefix),
+          cooldown_error_suffix: String(login.cooldown_error_suffix || fallbackDutchLandingCopy.cooldown_error_suffix),
+          no_access_error: String(login.no_access_error || fallbackDutchLandingCopy.no_access_error),
+          oauth_callback_error: String(login.oauth_callback_error || fallbackDutchLandingCopy.oauth_callback_error),
+          otp_callback_error: String(login.otp_callback_error || fallbackDutchLandingCopy.otp_callback_error),
+          invalid_link_error: String(login.invalid_link_error || fallbackDutchLandingCopy.invalid_link_error),
         };
         setLoginCopy(nextDutch);
       }
@@ -215,6 +259,17 @@ export default function LoginPage() {
           google_error: String(loginEn.google_error || fallbackEnglishLoginCopy.google_error),
           allowed_error: String(loginEn.allowed_error || fallbackEnglishLoginCopy.allowed_error),
           cooldown_error_prefix: String(loginEn.cooldown_error_prefix || fallbackEnglishLoginCopy.cooldown_error_prefix),
+          rate_limit_error: String(loginEn.rate_limit_error || fallbackEnglishLoginCopy.rate_limit_error),
+          rate_limit_suffix: String(loginEn.rate_limit_suffix || fallbackEnglishLoginCopy.rate_limit_suffix),
+          cooldown_status_prefix: String(loginEn.cooldown_status_prefix || fallbackEnglishLoginCopy.cooldown_status_prefix),
+          sending_button: String(loginEn.sending_button || fallbackEnglishLoginCopy.sending_button),
+          waiting_button_prefix: String(loginEn.waiting_button_prefix || fallbackEnglishLoginCopy.waiting_button_prefix),
+          error_prefix: String(loginEn.error_prefix || fallbackEnglishLoginCopy.error_prefix),
+          cooldown_error_suffix: String(loginEn.cooldown_error_suffix || fallbackEnglishLoginCopy.cooldown_error_suffix),
+          no_access_error: String(loginEn.no_access_error || fallbackEnglishLoginCopy.no_access_error),
+          oauth_callback_error: String(loginEn.oauth_callback_error || fallbackEnglishLoginCopy.oauth_callback_error),
+          otp_callback_error: String(loginEn.otp_callback_error || fallbackEnglishLoginCopy.otp_callback_error),
+          invalid_link_error: String(loginEn.invalid_link_error || fallbackEnglishLoginCopy.invalid_link_error),
         });
       }
     })();
@@ -265,7 +320,7 @@ export default function LoginPage() {
       return;
     }
     if (isCoolingDown) {
-      setMsg(`${displayedCopy.cooldown_error_prefix} ${formatRemaining(remainingMs)} opnieuw proberen.`);
+      setMsg(`${displayedCopy.cooldown_error_prefix} ${formatRemaining(remainingMs)} ${displayedCopy.cooldown_error_suffix}`);
       return;
     }
     const supabase = createSupabaseBrowserClient();
@@ -288,12 +343,12 @@ export default function LoginPage() {
       const until = Date.now() + progressiveMs;
       setCooldownUntilMs(until);
       window.localStorage.setItem(RATE_LIMIT_KEY, String(until));
-      setMsg(`Te veel aanvragen. Probeer het over ${formatRemaining(progressiveMs)} opnieuw.`);
+      setMsg(`${displayedCopy.rate_limit_error} ${formatRemaining(progressiveMs)} ${displayedCopy.rate_limit_suffix}`);
       setIsSendingLink(false);
       return;
     }
 
-    setMsg(`Inlogfout: ${error.message}`);
+    setMsg(`${displayedCopy.error_prefix} ${error.message}`);
     setIsSendingLink(false);
   }
 
@@ -354,9 +409,9 @@ export default function LoginPage() {
           />
           <button type="submit" disabled={isCoolingDown || isSendingLink} className="ftm-button">
             {isSendingLink
-              ? (isEnglishUi ? "Sending..." : "Bezig met versturen...")
+              ? displayedCopy.sending_button
               : isCoolingDown
-                ? (isEnglishUi ? `Wait ${formatRemaining(remainingMs)}` : `Wacht ${formatRemaining(remainingMs)}`)
+                ? `${displayedCopy.waiting_button_prefix} ${formatRemaining(remainingMs)}`
                 : displayedCopy.magic_link_button}
           </button>
           {googleLoginEnabled && (
@@ -372,9 +427,7 @@ export default function LoginPage() {
           </form>
         {isCoolingDown && (
             <p className="ftm-login-meta">
-              {isEnglishUi
-                ? `Too many requests. Remaining time: ${formatRemaining(remainingMs)}. `
-                : `Te veel verzoeken. Resterende tijd: ${formatRemaining(remainingMs)}. `}
+              {`${displayedCopy.cooldown_status_prefix} ${formatRemaining(remainingMs)}. `}
               <button
                 type="button"
                 onClick={() => {

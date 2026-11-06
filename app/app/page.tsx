@@ -28,13 +28,81 @@ type RoundState = {
 type AppCopy = {
   title: string;
   description: string;
-  inputs_title: string;
-  inputs: string[];
   future_note: string;
   verification_title: string;
   verification_copy: string;
   start_session_button: string;
   next_round_button: string;
+  language_switch_label: string;
+  language_nl_button: string;
+  language_en_button: string;
+  language_changed: string;
+  based_title: string;
+  based_intro: string;
+  based_sources_title: string;
+  based_sources: string[];
+  based_process: string;
+  superprompt_link: string;
+  github_link: string;
+  how_title: string;
+  how_copy: string;
+  loading_verification: string;
+  ftm_email_label: string;
+  verification_code_label: string;
+  send_code_button: string;
+  verify_code_button: string;
+  verification_email_required: string;
+  verification_code_required: string;
+  verification_code_sending: string;
+  verification_code_sent: string;
+  verification_code_checking: string;
+  verification_success: string;
+  verification_status_error: string;
+  choose_edition_first: string;
+  select_draft_first: string;
+  draft_too_large: string;
+  draft_too_large_tip: string;
+  generating: string;
+  unknown_error: string;
+  upload_too_large: string;
+  verify_first: string;
+  round_ready: string;
+  start_session_loading: string;
+  logout_button: string;
+  creator_queue_button: string;
+  language_session_prefix: string;
+  genre_label: string;
+  genre_news: string;
+  genre_research: string;
+  genre_analysis: string;
+  genre_feature: string;
+  genre_interview: string;
+  genre_podcast: string;
+  genre_essay: string;
+  draft_label: string;
+  email_placeholder: string;
+  verification_code_placeholder: string;
+  file_tip: string;
+  only_md_error: string;
+  draft_too_large_short: string;
+  understood_generating: string;
+  next_round_error_prefix: string;
+  current_edition_prefix: string;
+  round_title: string;
+  older_round_notice: string;
+  none_of_above: string;
+  feedback_label: string;
+  feedback_placeholder: string;
+  next_round_loading: string;
+  waiting_for_round: string;
+  start_session_error_prefix: string;
+  learnings_submitted: string;
+  submit_learning_error_prefix: string;
+  history_summary: string;
+  selected_indices_prefix: string;
+  none_of_above_short: string;
+  feedback_history_prefix: string;
+  dash: string;
 };
 
 const MAX_MD_UPLOAD_BYTES = 512 * 1024;
@@ -52,25 +120,98 @@ function draftKind(name: string): "md" | "unknown" {
 const fallbackAppCopy: AppCopy = {
   title: "FTM Koppensneller",
   description: "Deze tool genereert iteratief headline-opties voor je concept op basis van redactionele richtlijnen en historische voorbeelden.",
-  inputs_title: "Hoe dit werkt",
-  inputs: [
-    "We hebben een uitgebreide LLM-superprompt gebouwd om koppen te maken die passen bij Follow the Money. Die superprompt is samengesteld op basis van richtlijnen en historische patronen.",
-    "",
-    "Gebruikte bronnen:",
-    "[FTM-stijlgids (compact)](/docs/ftm-stijlgids-condensed)",
-    "[Comite Cliche Weg Ermee](/docs/comite-cliche-weg-ermee)",
-    "[FTM koppenchecklist](/docs/ftm-koppenchecklist)",
-    "historische koppen: patronen + 20 representatieve voorbeelden (samenvatting)",
-    "goedgekeurde gebruikersfeedback (lessons) om veelgemaakte fouten te vermijden",
-    "",
-    "Jij uploadt nu je concept (liefst .md uit Google Docs, of .docx) en kiest het genre. Daarna genereren we meerdere kop-opties in verschillende richtingen. Met jouw feedback sturen we elke volgende ronde bij.",
-  ],
   future_note: "Geef vooral feedback op de gegenereerde koppen; die feedback gebruiken we om de richtlijnen en prompt stap voor stap te verbeteren.",
   verification_title: "Verifieer je FTM e-mailadres",
   verification_copy: "Je bent ingelogd met een extern account. Verifieer nu je FTM mailbox om de tool te gebruiken.",
   start_session_button: "Start sessie",
   next_round_button: "Nieuwe ronde",
+  language_switch_label: "Taal en kopeditie",
+  language_nl_button: "Nederlands · FTM.nl",
+  language_en_button: "English · FTM.eu",
+  language_changed: "Taal en kopeditie ingesteld op",
+  based_title: "Waarop deze tool gebaseerd is",
+  based_intro: "We gebruiken een uitgebreide LLM-superprompt om koppen te maken die passen bij Follow the Money.",
+  based_sources_title: "Voor het Nederlandse profiel gebruikten we:",
+  based_sources: [],
+  based_process: "Op basis van deze bronnen bouwen we eerst een Nederlands superpromptprofiel. Voor FTM.eu hebben we dat profiel niet letterlijk vertaald: we hebben het aangepast voor natuurlijk internationaal Engels, de Engelse FTM.eu-doelgroep en de stijlpatronen uit een corpus van Engelse FTM-koppen vanaf 2024.",
+  superprompt_link: "Bekijk de volledige LLM-superprompt",
+  github_link: "Lees meer op GitHub",
+  how_title: "Hoe je deze tool gebruikt",
+  how_copy: "Upload je concept als .md (uit Google Docs) en kies het genre. Daarna genereren we meerdere kop-opties in verschillende richtingen. Met jouw feedback sturen we elke volgende ronde bij.",
+  loading_verification: "Verificatiestatus laden...",
+  ftm_email_label: "FTM e-mailadres",
+  verification_code_label: "Verificatiecode (6 cijfers)",
+  send_code_button: "Stuur code",
+  verify_code_button: "Verifieer code",
+  verification_email_required: "Vul je FTM e-mailadres in.",
+  verification_code_required: "Vul de 6-cijferige code in.",
+  verification_code_sending: "Code wordt verstuurd...",
+  verification_code_sent: "Verificatiecode verstuurd. Controleer je FTM mailbox.",
+  verification_code_checking: "Code controleren...",
+  verification_success: "FTM e-mailadres succesvol geverifieerd.",
+  choose_edition_first: "Kies eerst een kopeditie.",
+  select_draft_first: "Selecteer eerst een .md-bestand.",
+  draft_too_large: "Bestand is te groot ({size} MB). Maximaal {max} MB voor .md.",
+  draft_too_large_tip: "Tip: verwijder embeds en probeer opnieuw.",
+  generating: "Genereren...",
+  unknown_error: "Onbekende fout.",
+  upload_too_large: "Upload te groot voor de server. Maak je .md-bestand kleiner en probeer opnieuw.",
+  verification_status_error: "Kon verificatiestatus niet ophalen.",
+  verify_first: "Verifieer eerst je FTM e-mailadres.",
+  round_ready: "Ronde {round} klaar.",
+  start_session_loading: "Bezig met genereren...",
+  logout_button: "Uitloggen",
+  creator_queue_button: "Creator Queue",
+  language_session_prefix: "Kopeditie voor deze sessie:",
+  genre_label: "Genre",
+  genre_news: "nieuws",
+  genre_research: "onderzoek",
+  genre_analysis: "analyse",
+  genre_feature: "feature",
+  genre_interview: "interview",
+  genre_podcast: "podcast",
+  genre_essay: "essay",
+  draft_label: "Concept (.md)",
+  email_placeholder: "naam@ftm.nl",
+  verification_code_placeholder: "123456",
+  file_tip: "Tip (Google Docs): File → Download → Markdown (.md). Upload daarna die .md hier.",
+  only_md_error: "Alleen .md is toegestaan.",
+  draft_too_large_short: "Bestand is te groot ({size} MB). Maximaal {max} MB voor .md.",
+  understood_generating: "Begrepen. Nieuwe koppen worden gegenereerd...",
+  next_round_error_prefix: "Fout bij volgende ronde:",
+  current_edition_prefix: "Huidige kopeditie:",
+  round_title: "Ronde {round}",
+  older_round_notice: "Bekijkmodus: je kijkt naar een eerdere ronde. Selecteer de laatste ronde om verder te itereren.",
+  none_of_above: "Geen van bovenstaande",
+  feedback_label: "Feedback",
+  feedback_placeholder: "Bijv. korter, scherper, juridisch voorzichtiger",
+  next_round_loading: "Nieuwe koppen worden gegenereerd...",
+  waiting_for_round: "Even geduld: we werken aan een nieuwe ronde met aangepaste koppen.",
+  start_session_error_prefix: "Fout bij starten sessie:",
+  learnings_submitted: "Learnings automatisch ingediend voor review.",
+  submit_learning_error_prefix: "Fout bij indienen:",
+  history_summary: "Bekijk feedback uit eerdere rondes",
+  selected_indices_prefix: "Geselecteerde indices:",
+  none_of_above_short: "geen van bovenstaande",
+  feedback_history_prefix: "Feedback:",
+  dash: "-",
 };
+
+function formatCopy(text: string, values: Record<string, string>): string {
+  return text.replace(/\{(\w+)\}/g, (_, key: string) => values[key] ?? `{${key}}`);
+}
+
+function readAppCopy(value: unknown, fallback: AppCopy): AppCopy {
+  const source = value && typeof value === "object" ? value as Record<string, unknown> : {};
+  return Object.fromEntries(
+    Object.entries(fallback).map(([key, fallbackValue]) => [
+      key,
+      Array.isArray(fallbackValue)
+        ? (Array.isArray(source[key]) ? source[key].map(String) : fallbackValue)
+        : (typeof source[key] === "string" && source[key] ? source[key] : fallbackValue),
+    ]),
+  ) as AppCopy;
+}
 
 async function readResponsePayload(res: Response): Promise<Record<string, unknown>> {
   const contentType = res.headers.get("content-type") || "";
@@ -109,8 +250,10 @@ export default function AppPage() {
   const [loadingVerification, setLoadingVerification] = useState(true);
   const [isStartingSession, setIsStartingSession] = useState(false);
   const [isGeneratingNextRound, setIsGeneratingNextRound] = useState(false);
-  const [copy, setCopy] = useState<AppCopy>(fallbackAppCopy);
-  const [introHtml, setIntroHtml] = useState<string>("");
+  const [copyByLanguage, setCopyByLanguage] = useState<Record<HeadlineLanguage, AppCopy>>({
+    nl: fallbackAppCopy,
+    en: fallbackAppCopy,
+  });
   const [isCreatorUser, setIsCreatorUser] = useState(false);
   const [headlineLanguage, setHeadlineLanguage] = useState<HeadlineLanguage | null>(null);
   const [languageResolved, setLanguageResolved] = useState(false);
@@ -148,7 +291,7 @@ export default function AppPage() {
         const meJson = await meRes.json().catch(() => ({}));
         if (meRes.ok) setIsCreatorUser(Boolean(meJson?.is_creator));
       } else {
-        setVerificationMsg(json.error || "Kon verificatiestatus niet ophalen.");
+        setVerificationMsg(json.error || fallbackAppCopy.verification_status_error);
       }
       setLoadingVerification(false);
     }
@@ -156,25 +299,11 @@ export default function AppPage() {
     void (async () => {
       const res = await fetch("/api/ui-copy");
       const json = await res.json().catch(() => ({}));
-      const appCopy = json?.copy?.app;
-      if (!active || !appCopy) return;
-      setCopy({
-        title: String(appCopy.title || fallbackAppCopy.title),
-        description: String(appCopy.description || fallbackAppCopy.description),
-        inputs_title: String(appCopy.inputs_title || fallbackAppCopy.inputs_title),
-        inputs: Array.isArray(appCopy.inputs) ? appCopy.inputs.map(String) : fallbackAppCopy.inputs,
-        future_note: String(appCopy.future_note || fallbackAppCopy.future_note),
-        verification_title: String(appCopy.verification_title || fallbackAppCopy.verification_title),
-        verification_copy: String(appCopy.verification_copy || fallbackAppCopy.verification_copy),
-        start_session_button: String(appCopy.start_session_button || fallbackAppCopy.start_session_button),
-        next_round_button: String(appCopy.next_round_button || fallbackAppCopy.next_round_button),
-      });
-    })();
-    void (async () => {
-      const res = await fetch("/api/page-copy?slug=app&format=md");
-      const json = await res.json().catch(() => ({}));
       if (!active) return;
-      if (res.ok && typeof json?.html === "string") setIntroHtml(json.html);
+      setCopyByLanguage({
+        nl: readAppCopy(json?.copy?.app, fallbackAppCopy),
+        en: readAppCopy(json?.copy?.app_en, fallbackAppCopy),
+      });
     })();
     return () => {
       active = false;
@@ -185,40 +314,40 @@ export default function AppPage() {
     if (session) return;
     writeHeadlineLanguageToStorage(value);
     setHeadlineLanguage(value);
-    setStatus(`Kopeditie ingesteld op ${headlineLanguageLabel(value)}.`);
+    setStatus(`${copyByLanguage[value].language_changed} ${headlineLanguageLabel(value)}.`);
   }
 
   async function sendVerificationCode() {
-    if (!ftmEmail) return setVerificationMsg("Vul je FTM e-mailadres in.");
-    setVerificationMsg("Code wordt verstuurd...");
+    if (!ftmEmail) return setVerificationMsg(copy.verification_email_required);
+    setVerificationMsg(copy.verification_code_sending);
     const res = await fetch("/api/auth/ftm/start-verification", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ftm_email: ftmEmail }),
     });
     const json = await res.json();
-    if (!res.ok) return setVerificationMsg(json.error || "Versturen mislukt.");
-    setVerificationMsg("Verificatiecode verstuurd. Controleer je FTM mailbox.");
+    if (!res.ok) return setVerificationMsg(json.error || copy.unknown_error);
+    setVerificationMsg(copy.verification_code_sent);
   }
 
   async function submitVerificationCode() {
-    if (!verificationCode) return setVerificationMsg("Vul de 6-cijferige code in.");
-    setVerificationMsg("Code controleren...");
+    if (!verificationCode) return setVerificationMsg(copy.verification_code_required);
+    setVerificationMsg(copy.verification_code_checking);
     const res = await fetch("/api/auth/ftm/verify-code", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ code: verificationCode }),
     });
     const json = await res.json();
-    if (!res.ok) return setVerificationMsg(json.error || "Code verificatie mislukt.");
+    if (!res.ok) return setVerificationMsg(json.error || copy.unknown_error);
     setRequiresFtmVerification(false);
-    setVerificationMsg("FTM e-mailadres succesvol geverifieerd.");
+    setVerificationMsg(copy.verification_success);
     setVerificationCode("");
   }
 
   async function startSession() {
-    if (!headlineLanguage) return setStatus("Kies eerst een kopeditie.");
-    if (!draftFile) return setStatus("Selecteer eerst een .md-bestand.");
+    if (!headlineLanguage) return setStatus(copy.choose_edition_first);
+    if (!draftFile) return setStatus(copy.select_draft_first);
     {
       const kind = draftKind(draftFile.name);
       const limit = MAX_MD_UPLOAD_BYTES;
@@ -226,7 +355,7 @@ export default function AppPage() {
         const mb = (draftFile.size / (1024 * 1024)).toFixed(1);
         const maxMb = (limit / (1024 * 1024)).toFixed(1);
         return setStatus(
-          `Bestand is te groot (${mb} MB). Maximaal ${maxMb} MB voor .md. Tip: verwijder embeds en probeer opnieuw.`,
+          `${formatCopy(copy.draft_too_large, { size: mb, max: maxMb })} ${copy.draft_too_large_tip}`,
         );
       }
     }
@@ -236,18 +365,18 @@ export default function AppPage() {
       form.append("draft", draftFile);
       form.append("genre", genre);
       form.append("headline_language", headlineLanguage);
-      setStatus("Genereren...");
+      setStatus(copy.generating);
       const res = await fetch("/api/sessions", { method: "POST", body: form });
       const payload = await readResponsePayload(res);
-      const error = typeof payload.error === "string" ? payload.error : "Onbekende fout.";
+      const error = typeof payload.error === "string" ? payload.error : copy.unknown_error;
       if (res.status === 413) {
         return setStatus(
-          "Upload te groot voor de server. Maak je .docx kleiner (verwijder afbeeldingen) en probeer opnieuw.",
+          copy.upload_too_large,
         );
       }
       if (res.status === 403 && error === "FORBIDDEN_FTM_NOT_VERIFIED") {
         setRequiresFtmVerification(true);
-        return setStatus("Verifieer eerst je FTM e-mailadres.");
+        return setStatus(copy.verify_first);
       }
       if (!res.ok) return setStatus(error);
       setSession({
@@ -268,9 +397,9 @@ export default function AppPage() {
       setActiveRoundNumber(firstRoundNumber);
       setSelected([]);
       await submitLearnings(String(payload.session_id), true);
-      setStatus("Ronde 1 klaar.");
+      setStatus(formatCopy(copy.round_ready, { round: "1" }));
     } catch (err) {
-      setStatus(`Fout bij starten sessie: ${err instanceof Error ? err.message : "onbekende fout"}`);
+      setStatus(`${copy.start_session_error_prefix} ${err instanceof Error ? err.message : copy.unknown_error}`);
     } finally {
       setIsStartingSession(false);
     }
@@ -278,10 +407,10 @@ export default function AppPage() {
 
   async function nextRound() {
     if (!session) return;
-    if (!session.headlineLanguage) return setStatus("Kies eerst een kopeditie.");
+    if (!session.headlineLanguage) return setStatus(copy.choose_edition_first);
     try {
       setIsGeneratingNextRound(true);
-      setStatus("Begrepen. Nieuwe koppen worden gegenereerd...");
+      setStatus(copy.understood_generating);
       const selectedSnapshot = [...selected];
       const feedbackSnapshot = feedback;
       const res = await fetch(
@@ -298,10 +427,10 @@ export default function AppPage() {
         },
       );
       const payload = await readResponsePayload(res);
-      const error = typeof payload.error === "string" ? payload.error : "Onbekende fout.";
+      const error = typeof payload.error === "string" ? payload.error : copy.unknown_error;
       if (res.status === 403 && error === "FORBIDDEN_FTM_NOT_VERIFIED") {
         setRequiresFtmVerification(true);
-        return setStatus("Verifieer eerst je FTM e-mailadres.");
+        return setStatus(copy.verify_first);
       }
       if (!res.ok) return setStatus(error);
       const newRoundNumber = Number(payload.round_number);
@@ -332,9 +461,9 @@ export default function AppPage() {
       setSelected([]);
       setFeedback("");
       await submitLearnings(session.sessionId, true);
-      setStatus(`Ronde ${String(payload.round_number)} klaar.`);
+      setStatus(formatCopy(copy.round_ready, { round: String(payload.round_number) }));
     } catch (err) {
-      setStatus(`Fout bij volgende ronde: ${err instanceof Error ? err.message : "onbekende fout"}`);
+      setStatus(`${copy.next_round_error_prefix} ${err instanceof Error ? err.message : copy.unknown_error}`);
     } finally {
       setIsGeneratingNextRound(false);
     }
@@ -367,18 +496,19 @@ export default function AppPage() {
         body,
       });
       const payload = await readResponsePayload(res);
-      const error = typeof payload.error === "string" ? payload.error : "Kon niet indienen.";
+      const error = typeof payload.error === "string" ? payload.error : copy.unknown_error;
       if (!res.ok && !silent) return setStatus(error);
       if (!res.ok) return;
-      if (!silent) setStatus("Learnings automatisch ingediend voor review.");
+      if (!silent) setStatus(copy.learnings_submitted);
     } catch (err) {
       if (!silent) {
-        setStatus(`Fout bij indienen: ${err instanceof Error ? err.message : "onbekende fout"}`);
+        setStatus(`${copy.submit_learning_error_prefix} ${err instanceof Error ? err.message : copy.unknown_error}`);
       }
     }
   }
 
   const currentHeadlineLanguage = headlineLanguage ?? session?.headlineLanguage ?? null;
+  const copy = copyByLanguage[currentHeadlineLanguage ?? "nl"];
 
   useEffect(() => {
     if (!loadingVerification && !requiresFtmVerification && languageResolved && !currentHeadlineLanguage && !session) {
@@ -389,21 +519,21 @@ export default function AppPage() {
   return (
     <main className="ftm-tool-shell">
       <section className="ftm-tool-panel">
-      {loadingVerification && <div className="ftm-coach-card">Verificatiestatus laden...</div>}
+      {loadingVerification && <div className="ftm-coach-card">{copy.loading_verification}</div>}
       {!loadingVerification && requiresFtmVerification && (
         <div className="ftm-coach-card">
           <h2 className="ftm-coach-h2">{copy.verification_title}</h2>
           <p>{copy.verification_copy}</p>
-          <label className="ftm-coach-label">FTM e-mailadres</label>
+          <label className="ftm-coach-label">{copy.ftm_email_label}</label>
           <input
             className="ftm-coach-input"
             type="email"
             value={ftmEmail}
             onChange={(e) => setFtmEmail(e.target.value)}
-            placeholder="naam@ftm.nl"
+            placeholder={copy.email_placeholder}
           />
-          <button className="ftm-coach-btn" onClick={sendVerificationCode}>Stuur code</button>
-          <label className="ftm-coach-label">Verificatiecode (6 cijfers)</label>
+          <button className="ftm-coach-btn" onClick={sendVerificationCode}>{copy.send_code_button}</button>
+          <label className="ftm-coach-label">{copy.verification_code_label}</label>
           <input
             className="ftm-coach-input"
             type="text"
@@ -411,9 +541,9 @@ export default function AppPage() {
             maxLength={6}
             value={verificationCode}
             onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, ""))}
-            placeholder="123456"
+            placeholder={copy.verification_code_placeholder}
           />
-          <button className="ftm-coach-btn" onClick={submitVerificationCode}>Verifieer code</button>
+          <button className="ftm-coach-btn" onClick={submitVerificationCode}>{copy.verify_code_button}</button>
           {verificationMsg && <p className="ftm-coach-meta">{verificationMsg}</p>}
         </div>
       )}
@@ -432,66 +562,66 @@ export default function AppPage() {
               </h1>
             </div>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
-              <div className="ftm-app-language-toggle" role="group" aria-label="Kopeditie">
-                <button
-                  type="button"
-                  className={`ftm-app-language-toggle-btn ${currentHeadlineLanguage === "nl" ? "is-active" : ""}`}
-                  onClick={() => selectHeadlineLanguage("nl")}
-                  disabled={Boolean(session)}
-                >
-                  FTM.nl
-                </button>
-                <button
-                  type="button"
-                  className={`ftm-app-language-toggle-btn ${currentHeadlineLanguage === "en" ? "is-active" : ""}`}
-                  onClick={() => selectHeadlineLanguage("en")}
-                  disabled={Boolean(session)}
-                >
-                  FTM.eu
-                </button>
-              </div>
               {isCreatorUser && (
                 <a
                   href="/creator/queue"
                   className="ftm-coach-btn ftm-coach-btn-dark"
                   style={{ textDecoration: "none", display: "inline-flex", alignItems: "center" }}
                 >
-                  Creator Queue
+                  {copy.creator_queue_button}
                 </a>
               )}
-              <button className="ftm-coach-btn ftm-coach-btn-dark" type="button" onClick={logout}>Uitloggen</button>
+              <button className="ftm-coach-btn ftm-coach-btn-dark" type="button" onClick={logout}>{copy.logout_button}</button>
             </div>
           </div>
-          {introHtml ? (
-            <div className="ftm-doc-prose" dangerouslySetInnerHTML={{ __html: introHtml }} />
-          ) : (
-            <>
-              <p className="ftm-coach-meta">{copy.description}</p>
-              <div>
-                <strong>{copy.inputs_title}</strong>
-                <ul className="ftm-coach-list">
-                  {copy.inputs.map((item, i) => (
-                    <li key={`${i}-${item}`}>{renderMaybeLink(item)}</li>
-                  ))}
-                </ul>
-              </div>
-            </>
-          )}
+          <p className="ftm-coach-meta">{copy.description}</p>
+          <div className="ftm-doc-prose">
+            <h2>{copy.based_title}</h2>
+            <p>{copy.based_intro}</p>
+            <p>{copy.based_sources_title}</p>
+            <ul>
+              {copy.based_sources.map((item, i) => <li key={`${i}-${item}`}>{renderMaybeLink(item)}</li>)}
+            </ul>
+            <p>{copy.based_process}</p>
+            <p>{renderMaybeLink(copy.superprompt_link)}</p>
+            <p>{renderMaybeLink(copy.github_link)}</p>
+            <h2>{copy.how_title}</h2>
+            <p>{copy.how_copy}</p>
+          </div>
           <p className="ftm-coach-meta">{copy.future_note}</p>
           <p className="ftm-coach-meta">
-            Kopeditie voor deze sessie: <strong>{headlineLanguageLabel(currentHeadlineLanguage)}</strong>
+            {copy.language_session_prefix} <strong>{headlineLanguageLabel(currentHeadlineLanguage)}</strong>
           </p>
-          <label className="ftm-coach-label">Genre</label>
+          <label className="ftm-coach-label">{copy.language_switch_label}</label>
+          <div className="ftm-app-language-toggle" role="group" aria-label={copy.language_switch_label}>
+            <button
+              type="button"
+              className={`ftm-app-language-toggle-btn ${currentHeadlineLanguage === "nl" ? "is-active" : ""}`}
+              onClick={() => selectHeadlineLanguage("nl")}
+              disabled={Boolean(session)}
+            >
+              {copy.language_nl_button}
+            </button>
+            <button
+              type="button"
+              className={`ftm-app-language-toggle-btn ${currentHeadlineLanguage === "en" ? "is-active" : ""}`}
+              onClick={() => selectHeadlineLanguage("en")}
+              disabled={Boolean(session)}
+            >
+              {copy.language_en_button}
+            </button>
+          </div>
+          <label className="ftm-coach-label">{copy.genre_label}</label>
           <select className="ftm-coach-select" value={genre} onChange={(e) => setGenre(e.target.value)}>
-            <option value="nieuws">nieuws</option>
-            <option value="onderzoek">onderzoek</option>
-            <option value="analyse">analyse</option>
-            <option value="feature">feature</option>
-            <option value="interview">interview</option>
-            <option value="podcast">podcast</option>
-            <option value="essay">essay</option>
+            <option value="nieuws">{copy.genre_news}</option>
+            <option value="onderzoek">{copy.genre_research}</option>
+            <option value="analyse">{copy.genre_analysis}</option>
+            <option value="feature">{copy.genre_feature}</option>
+            <option value="interview">{copy.genre_interview}</option>
+            <option value="podcast">{copy.genre_podcast}</option>
+            <option value="essay">{copy.genre_essay}</option>
           </select>
-          <label className="ftm-coach-label">Concept (.md)</label>
+          <label className="ftm-coach-label">{copy.draft_label}</label>
           <input
             className="ftm-coach-input"
             type="file"
@@ -502,25 +632,24 @@ export default function AppPage() {
               if (!f) return;
               const kind = draftKind(f.name);
               if (kind === "unknown") {
-                setStatus("Alleen .md is toegestaan.");
+                setStatus(copy.only_md_error);
                 return;
               }
               if (f.size > MAX_MD_UPLOAD_BYTES) {
                 const mb = (f.size / (1024 * 1024)).toFixed(1);
                 const maxMb = (MAX_MD_UPLOAD_BYTES / (1024 * 1024)).toFixed(1);
-                setStatus(`Bestand is te groot (${mb} MB). Maximaal ${maxMb} MB voor .md.`);
+                setStatus(formatCopy(copy.draft_too_large_short, { size: mb, max: maxMb }));
                 return;
               }
               setStatus("");
             }}
           />
           <p className="ftm-coach-meta">
-            Tip (Google Docs): <span style={{ fontWeight: 600 }}>File</span> → <span style={{ fontWeight: 600 }}>Download</span> →{" "}
-            <span style={{ fontWeight: 600 }}>Markdown (.md)</span>. Upload daarna die .md hier.
+            {copy.file_tip}
           </p>
           {!session && (
             <button className="ftm-coach-btn" onClick={startSession} disabled={isStartingSession}>
-              {isStartingSession ? "Bezig met genereren..." : copy.start_session_button}
+              {isStartingSession ? copy.start_session_loading : copy.start_session_button}
             </button>
           )}
           <p className="ftm-coach-meta">{status}</p>
@@ -532,10 +661,10 @@ export default function AppPage() {
           <div className="ftm-round-header">
             <div>
               <h2 className="ftm-coach-h2" style={{ margin: 0 }}>
-                Ronde {activeRound?.roundNumber ?? session.roundNumber}
+                {formatCopy(copy.round_title, { round: String(activeRound?.roundNumber ?? session.roundNumber) })}
               </h2>
               <p className="ftm-coach-meta" style={{ marginTop: 6 }}>
-                Huidige kopeditie: <strong>{currentHeadlineLanguage ? headlineLanguageLabel(currentHeadlineLanguage) : headlineLanguageLabel(session.headlineLanguage)}</strong>
+                {copy.current_edition_prefix} <strong>{currentHeadlineLanguage ? headlineLanguageLabel(currentHeadlineLanguage) : headlineLanguageLabel(session.headlineLanguage)}</strong>
               </p>
             </div>
             <div className="ftm-round-pills">
@@ -554,7 +683,7 @@ export default function AppPage() {
 
           {!isViewingLatestRound && (
             <p className="ftm-coach-meta">
-              Bekijkmodus: je kijkt naar een eerdere ronde. Selecteer de laatste ronde om verder te itereren.
+              {copy.older_round_notice}
             </p>
           )}
 
@@ -576,43 +705,43 @@ export default function AppPage() {
               disabled={!isViewingLatestRound || isGeneratingNextRound}
               onChange={(e) => toggleHeadline(NONE_OF_ABOVE_INDEX, e.target.checked)}
             />
-            <span>Geen van bovenstaande</span>
+            <span>{copy.none_of_above}</span>
           </label>
-          <label className="ftm-coach-label">Feedback</label>
+          <label className="ftm-coach-label">{copy.feedback_label}</label>
           <textarea
             className="ftm-coach-textarea"
             rows={4}
             value={feedback}
             disabled={!isViewingLatestRound || isGeneratingNextRound}
             onChange={(e) => setFeedback(e.target.value)}
-            placeholder="Bijv. korter, scherper, juridisch voorzichtiger"
+            placeholder={copy.feedback_placeholder}
           />
           <button
             className="ftm-coach-btn"
             onClick={nextRound}
             disabled={isGeneratingNextRound || !isViewingLatestRound}
           >
-            {isGeneratingNextRound ? "Nieuwe koppen worden gegenereerd..." : copy.next_round_button}
+            {isGeneratingNextRound ? copy.next_round_loading : copy.next_round_button}
           </button>
           {isGeneratingNextRound && (
-            <p className="ftm-coach-meta">Even geduld: we werken aan een nieuwe ronde met aangepaste koppen.</p>
+            <p className="ftm-coach-meta">{copy.waiting_for_round}</p>
           )}
 
           {rounds.length > 1 && (
             <details className="ftm-round-history">
-              <summary>Bekijk feedback uit eerdere rondes</summary>
+              <summary>{copy.history_summary}</summary>
               <div className="ftm-round-history-body">
                 {rounds
                   .filter((round) => round.roundNumber < (session?.roundNumber ?? 0))
                   .map((round) => (
                     <div key={`history-${round.roundNumber}`} className="ftm-round-history-item">
-                      <strong>Ronde {round.roundNumber}</strong>
+                      <strong>{formatCopy(copy.round_title, { round: String(round.roundNumber) })}</strong>
                       <p className="ftm-coach-meta">
-                        Geselecteerde indices: {round.selectedIndices.map((index) => (
-                          index === NONE_OF_ABOVE_INDEX ? "geen van bovenstaande" : String(index + 1)
-                        )).join(", ") || "-"}
+                        {copy.selected_indices_prefix} {round.selectedIndices.map((index) => (
+                          index === NONE_OF_ABOVE_INDEX ? copy.none_of_above_short : String(index + 1)
+                        )).join(", ") || copy.dash}
                       </p>
-                      <p className="ftm-coach-meta">Feedback: {round.feedbackText || "-"}</p>
+                      <p className="ftm-coach-meta">{copy.feedback_history_prefix} {round.feedbackText || copy.dash}</p>
                     </div>
                   ))}
               </div>

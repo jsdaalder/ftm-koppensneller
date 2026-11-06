@@ -25,6 +25,7 @@ export async function GET(request: Request) {
     hasTokenHash: Boolean(tokenHash),
     type,
   };
+  console.info("auth callback received", context);
 
   const supabase = await createSupabaseServerClient();
 
@@ -44,6 +45,7 @@ export async function GET(request: Request) {
       loginUrl.searchParams.set("error_id", eventId);
       return NextResponse.redirect(loginUrl);
     }
+    console.info("auth callback code exchange succeeded", context);
     return NextResponse.redirect(new URL(next, url.origin));
   }
 
@@ -66,6 +68,7 @@ export async function GET(request: Request) {
       loginUrl.searchParams.set("error_id", eventId);
       return NextResponse.redirect(loginUrl);
     }
+    console.info("auth callback OTP verification succeeded", context);
     return NextResponse.redirect(new URL(next, url.origin));
   }
 

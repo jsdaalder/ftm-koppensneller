@@ -46,7 +46,7 @@ function mapLoginErrorParam(errorCode: string): string {
     case "no_access_role":
       return "Je account heeft nog geen toegang. Neem contact op met de beheerder.";
     case "oauth_callback_failed":
-      return "Inloggen met Google is mislukt. Probeer opnieuw.";
+      return "Inloggen is mislukt tijdens de verificatie. Probeer opnieuw.";
     case "otp_callback_failed":
       return "Verificatie via magic link is mislukt. Vraag een nieuwe link aan.";
     case "missing_code":
@@ -152,8 +152,10 @@ export default function LoginPage() {
 
     const params = new URLSearchParams(window.location.search);
     const errorCode = params.get("error");
+    const errorId = params.get("error_id");
     if (errorCode) {
-      setMsg(mapLoginErrorParam(errorCode));
+      const message = mapLoginErrorParam(errorCode);
+      setMsg(errorId ? `${message} (diagnostic ID: ${errorId})` : message);
     }
 
     // If already authenticated, skip the login screen.

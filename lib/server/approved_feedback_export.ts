@@ -1,4 +1,5 @@
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { NONE_OF_ABOVE_INDEX } from "@/lib/types";
 
 type ApprovedSubmission = {
   id: string;
@@ -152,6 +153,10 @@ export async function buildApprovedFeedbackMarkdown(): Promise<{
                 const sugg = (r.suggestions ?? []).map((s) => (typeof s?.headline === "string" ? s.headline : "")).filter(Boolean);
                 const picked: string[] = [];
                 for (const i of idx) {
+                  if (i === NONE_OF_ABOVE_INDEX) {
+                    picked.push("Geen van bovenstaande");
+                    continue;
+                  }
                   if (typeof i === "number" && i >= 0 && i < sugg.length) picked.push(sugg[i]);
                 }
                 return picked;

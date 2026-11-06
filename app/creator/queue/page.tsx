@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { NONE_OF_ABOVE_INDEX } from "@/lib/types";
 
 type QueueItem = {
   id: string;
@@ -56,6 +57,10 @@ function deriveSelectedHeadlines(round: ParsedRound): string[] {
   const all = extractSuggestionHeadlines(round.suggestions_json);
   const picked: string[] = [];
   for (const i of idx) {
+    if (i === NONE_OF_ABOVE_INDEX) {
+      picked.push("Geen van bovenstaande");
+      continue;
+    }
     if (i >= 0 && i < all.length) picked.push(all[i]);
   }
   return picked;
@@ -327,7 +332,9 @@ export default function CreatorQueuePage() {
                     </summary>
                     <div style={{ marginTop: 8, display: "grid", gap: 6 }}>
                       <p className="ftm-coach-meta">
-                        Geselecteerde indices: {(round.selected_indices ?? []).join(", ") || "-"}
+                        Geselecteerde indices: {(round.selected_indices ?? []).map((index) => (
+                          index === NONE_OF_ABOVE_INDEX ? "geen van bovenstaande" : String(index + 1)
+                        )).join(", ") || "-"}
                       </p>
                       <p className="ftm-coach-meta">
                         Geselecteerde koppen: {(round.selected_headlines ?? []).join(" | ") || "-"}

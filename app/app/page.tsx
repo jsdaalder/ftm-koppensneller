@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Suggestion } from "@/lib/types";
+import { NONE_OF_ABOVE_INDEX, Suggestion } from "@/lib/types";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 import {
   HEADLINE_LANGUAGE_PARAM,
@@ -333,6 +333,18 @@ export default function AppPage() {
     }
   }
 
+  function toggleHeadline(index: number, checked: boolean) {
+    setSelected((prev) => {
+      if (index === NONE_OF_ABOVE_INDEX) {
+        return checked ? [NONE_OF_ABOVE_INDEX] : prev.filter((value) => value !== NONE_OF_ABOVE_INDEX);
+      }
+      const withoutNone = prev.filter((value) => value !== NONE_OF_ABOVE_INDEX);
+      return checked
+        ? [...withoutNone, index]
+        : withoutNone.filter((value) => value !== index);
+    });
+  }
+
   const activeRound = rounds.find((r) => r.roundNumber === activeRoundNumber) ?? null;
   const isViewingLatestRound = !session || !activeRound ? false : activeRound.roundNumber === session.roundNumber;
 
@@ -526,15 +538,20 @@ export default function AppPage() {
                 type="checkbox"
                 checked={selected.includes(i)}
                 disabled={!isViewingLatestRound || isGeneratingNextRound}
-                onChange={(e) => {
-                  setSelected((prev) =>
-                    e.target.checked ? [...prev, i] : prev.filter((v) => v !== i),
-                  );
-                }}
+                onChange={(e) => toggleHeadline(i, e.target.checked)}
               />
-              <span>[{i}] {s.headline}</span>
+              <span>[{i + 1}] {s.headline}</span>
             </label>
           ))}
+          <label className="ftm-coach-suggestion">
+            <input
+              type="checkbox"
+              checked={selected.includes(NONE_OF_ABOVE_INDEX)}
+              disabled={!isViewingLatestRound || isGeneratingNextRound}
+              onChange={(e) => toggleHeadline(NONE_OF_ABOVE_INDEX, e.target.checked)}
+            />
+            <span>Geen van bovenstaande</span>
+          </label>
           <label className="ftm-coach-label">Feedback</label>
           <textarea
             className="ftm-coach-textarea"
@@ -565,7 +582,9 @@ export default function AppPage() {
                     <div key={`history-${round.roundNumber}`} className="ftm-round-history-item">
                       <strong>Ronde {round.roundNumber}</strong>
                       <p className="ftm-coach-meta">
-                        Geselecteerde indices: {round.selectedIndices.join(", ") || "-"}
+                        Geselecteerde indices: {round.selectedIndices.map((index) => (
+                          index === NONE_OF_ABOVE_INDEX ? "geen van bovenstaande" : String(index + 1)
+                        )).join(", ") || "-"}
                       </p>
                       <p className="ftm-coach-meta">Feedback: {round.feedbackText || "-"}</p>
                     </div>

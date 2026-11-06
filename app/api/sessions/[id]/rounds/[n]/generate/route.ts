@@ -9,6 +9,7 @@ import { getActiveProfile } from "@/lib/server/profiles";
 import { assertSameOrigin } from "@/lib/server/security";
 import { enforceDailyGenerationLimit } from "@/lib/server/usage";
 import { errorToMessage } from "@/lib/server/errors";
+import { NONE_OF_ABOVE_INDEX } from "@/lib/types";
 
 const bodySchema = z.object({
   selected_indices: z.array(z.number()).default([]),
@@ -65,7 +66,7 @@ export async function POST(
       .join("\n");
     const lastSuggestions = rounds?.[rounds.length - 1]?.suggestions_json;
     const selectedTexts = parsed.selected_indices
-      .map((i) => lastSuggestions?.[i]?.headline)
+      .map((i) => i === NONE_OF_ABOVE_INDEX ? "(geen van bovenstaande)" : lastSuggestions?.[i]?.headline)
       .filter(Boolean)
       .join("\n- ");
 

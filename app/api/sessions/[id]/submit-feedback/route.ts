@@ -5,10 +5,7 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { assertSameOrigin } from "@/lib/server/security";
 import { errorToMessage } from "@/lib/server/errors";
-
-function parseHeadlineLanguage(input: unknown): "nl" | "en" {
-  return input === "en" ? "en" : "nl";
-}
+import { headlineLanguageForProfileId } from "@/lib/server/profiles";
 
 export async function POST(
   req: Request,
@@ -18,9 +15,6 @@ export async function POST(
     assertSameOrigin(req);
     const params = await ctx.params;
     const sessionId = params.id;
-    const rawBody = await req.text();
-    const body = rawBody ? JSON.parse(rawBody) as Record<string, unknown> : {};
-    const headlineLanguage = parseHeadlineLanguage(body.headline_language);
     const supabase = await createSupabaseServerClient();
     const {
       data: { user },
@@ -36,6 +30,7 @@ export async function POST(
     if (!session || session.user_id !== user.id) {
       return NextResponse.json({ error: "Geen toegang tot sessie." }, { status: 403 });
     }
+    const headlineLanguage = headlineLanguageForProfileId(session.profile_id);
     const { data: rounds } = await admin
       .from("session_rounds")
       .select("round_number,suggestions_json,selected_indices,feedback_text,direction_tags,user_revision_text")

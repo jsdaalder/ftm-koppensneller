@@ -34,6 +34,10 @@ function asString(v: unknown): string {
   return typeof v === "string" ? v : "";
 }
 
+function headlineEditionLabel(value: string): string {
+  return value === "en" ? "FTM.eu" : value === "nl" ? "FTM.nl" : "-";
+}
+
 function asNumberArray(v: unknown): number[] {
   if (!Array.isArray(v)) return [];
   return v.filter((x) => typeof x === "number" && Number.isFinite(x));
@@ -317,7 +321,7 @@ export default function CreatorQueuePage() {
                 <p className="ftm-coach-meta">ID: {item.id}</p>
                 <p className="ftm-coach-meta">User: {item.user_email ?? "-"}</p>
                 <p className="ftm-coach-meta">
-                  Sessie: {payload.session_id ?? "-"} | Profiel: {payload.profile_id ?? "-"} | Genre: {payload.genre ?? "-"} | Koptaal: {payload.headline_language || "-"}
+                  Sessie: {payload.session_id ?? "-"} | Profiel: {payload.profile_id ?? "-"} | Genre: {payload.genre ?? "-"} | Kopeditie: {headlineEditionLabel(payload.headline_language || "")}
                 </p>
 
               <div style={{ display: "grid", gap: 10 }}>

@@ -5,7 +5,7 @@ import { z } from "zod";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { requireUser } from "@/lib/server/auth";
 import { generateSuggestions, loadGuidelinesBundle } from "@/lib/server/generator";
-import { getActiveProfile } from "@/lib/server/profiles";
+import { getActiveProfile, headlineLanguageForProfileId } from "@/lib/server/profiles";
 import { assertSameOrigin } from "@/lib/server/security";
 import { enforceDailyGenerationLimit } from "@/lib/server/usage";
 import { errorToMessage } from "@/lib/server/errors";
@@ -70,7 +70,8 @@ export async function POST(
       .filter(Boolean)
       .join("\n- ");
 
-    const profile = await getActiveProfile();
+    const headlineLanguage = headlineLanguageForProfileId(session.profile_id);
+    const profile = await getActiveProfile(headlineLanguage);
     const guidelines = await loadGuidelinesBundle();
     const draftTextHint = `
 Geselecteerde eerdere koppen:
@@ -88,7 +89,7 @@ ${parsed.user_revision_text || "(geen)"}
       genre: session.genre,
       roundNumber,
       feedbackHistory,
-      headlineLanguage: parsed.headline_language,
+      headlineLanguage,
     });
 
     const directionTags = parseDirectionTags(parsed.feedback_text);
@@ -118,7 +119,7 @@ ${parsed.user_revision_text || "(geen)"}
     });
     if (newRoundErr) throw newRoundErr;
 
-    return NextResponse.json({ round_number: roundNumber, suggestions, headline_language: parsed.headline_language });
+    return NextResponse.json({ round_number: roundNumber, suggestions, headline_language: headlineLanguage });
   } catch (err) {
     if (err instanceof Error && err.message === "UNAUTHORIZED") {
       return NextResponse.json({ error: "Not authenticated." }, { status: 401 });

@@ -47,7 +47,7 @@ export async function POST(req: Request) {
 
     const draftText = await file.text();
     const { summary: draftSummary } = await summarizeDraftText({ draftText, genre });
-    const profile = await getActiveProfile();
+    const profile = await getActiveProfile(headlineLanguage);
     const guidelines = await loadGuidelinesBundle();
     const suggestions = await generateSuggestions({
       profilePrompt: profile.prompt_markdown,

@@ -384,6 +384,39 @@ input, select, textarea, button {
   cursor: not-allowed;
 }
 
+.ftm-app-language-toggle {
+  display: inline-flex;
+  border: 1px solid #c7beaf;
+  background: #fff;
+}
+
+.ftm-app-language-toggle-btn {
+  border: 0;
+  border-right: 1px solid #c7beaf;
+  border-radius: 0;
+  padding: 7px 9px;
+  min-width: 40px;
+  background: transparent;
+  color: #2d313a;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.ftm-app-language-toggle-btn:last-child {
+  border-right: 0;
+}
+
+.ftm-app-language-toggle-btn.is-active {
+  background: #2a2d33;
+  color: #fff;
+}
+
+.ftm-app-language-toggle-btn:disabled {
+  opacity: 0.62;
+  cursor: not-allowed;
+}
+
 .ftm-coach-meta {
   margin: 0;
   font-size: 14px;

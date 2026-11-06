@@ -40,7 +40,7 @@ type AppCopy = {
 const MAX_MD_UPLOAD_BYTES = 512 * 1024;
 
 function headlineLanguageLabel(value: HeadlineLanguage): string {
-  return value === "en" ? "English" : "Nederlands";
+  return value === "en" ? "FTM.eu" : "FTM.nl";
 }
 
 function draftKind(name: string): "md" | "unknown" {
@@ -181,6 +181,13 @@ export default function AppPage() {
     };
   }, []);
 
+  function selectHeadlineLanguage(value: HeadlineLanguage) {
+    if (session) return;
+    writeHeadlineLanguageToStorage(value);
+    setHeadlineLanguage(value);
+    setStatus(`Kopeditie ingesteld op ${headlineLanguageLabel(value)}.`);
+  }
+
   async function sendVerificationCode() {
     if (!ftmEmail) return setVerificationMsg("Vul je FTM e-mailadres in.");
     setVerificationMsg("Code wordt verstuurd...");
@@ -210,7 +217,7 @@ export default function AppPage() {
   }
 
   async function startSession() {
-    if (!headlineLanguage) return setStatus("Kies eerst of je koppen in het Nederlands of in het Engels wilt genereren.");
+    if (!headlineLanguage) return setStatus("Kies eerst een kopeditie.");
     if (!draftFile) return setStatus("Selecteer eerst een .md-bestand.");
     {
       const kind = draftKind(draftFile.name);
@@ -271,7 +278,7 @@ export default function AppPage() {
 
   async function nextRound() {
     if (!session) return;
-    if (!headlineLanguage) return setStatus("Kies eerst of je koppen in het Nederlands of in het Engels wilt genereren.");
+    if (!session.headlineLanguage) return setStatus("Kies eerst een kopeditie.");
     try {
       setIsGeneratingNextRound(true);
       setStatus("Begrepen. Nieuwe koppen worden gegenereerd...");
@@ -286,7 +293,7 @@ export default function AppPage() {
             selected_indices: selected,
             feedback_text: feedback,
             user_revision_text: "",
-            headline_language: headlineLanguage,
+            headline_language: session.headlineLanguage,
           }),
         },
       );
@@ -352,7 +359,8 @@ export default function AppPage() {
     const targetSessionId = sessionIdArg || session?.sessionId;
     if (!targetSessionId) return;
     try {
-      const body = headlineLanguage ? JSON.stringify({ headline_language: headlineLanguage }) : undefined;
+      const language = session?.headlineLanguage ?? headlineLanguage;
+      const body = language ? JSON.stringify({ headline_language: language }) : undefined;
       const res = await fetch(`/api/sessions/${targetSessionId}/submit-feedback`, {
         method: "POST",
         headers: body ? { "Content-Type": "application/json" } : undefined,
@@ -424,6 +432,24 @@ export default function AppPage() {
               </h1>
             </div>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
+              <div className="ftm-app-language-toggle" role="group" aria-label="Kopeditie">
+                <button
+                  type="button"
+                  className={`ftm-app-language-toggle-btn ${currentHeadlineLanguage === "nl" ? "is-active" : ""}`}
+                  onClick={() => selectHeadlineLanguage("nl")}
+                  disabled={Boolean(session)}
+                >
+                  FTM.nl
+                </button>
+                <button
+                  type="button"
+                  className={`ftm-app-language-toggle-btn ${currentHeadlineLanguage === "en" ? "is-active" : ""}`}
+                  onClick={() => selectHeadlineLanguage("en")}
+                  disabled={Boolean(session)}
+                >
+                  FTM.eu
+                </button>
+              </div>
               {isCreatorUser && (
                 <a
                   href="/creator/queue"
@@ -453,7 +479,7 @@ export default function AppPage() {
           )}
           <p className="ftm-coach-meta">{copy.future_note}</p>
           <p className="ftm-coach-meta">
-            Koptaal voor deze sessie: <strong>{headlineLanguageLabel(currentHeadlineLanguage)}</strong>
+            Kopeditie voor deze sessie: <strong>{headlineLanguageLabel(currentHeadlineLanguage)}</strong>
           </p>
           <label className="ftm-coach-label">Genre</label>
           <select className="ftm-coach-select" value={genre} onChange={(e) => setGenre(e.target.value)}>
@@ -509,7 +535,7 @@ export default function AppPage() {
                 Ronde {activeRound?.roundNumber ?? session.roundNumber}
               </h2>
               <p className="ftm-coach-meta" style={{ marginTop: 6 }}>
-                Huidige koptaal: <strong>{currentHeadlineLanguage ? headlineLanguageLabel(currentHeadlineLanguage) : headlineLanguageLabel(session.headlineLanguage)}</strong>
+                Huidige kopeditie: <strong>{currentHeadlineLanguage ? headlineLanguageLabel(currentHeadlineLanguage) : headlineLanguageLabel(session.headlineLanguage)}</strong>
               </p>
             </div>
             <div className="ftm-round-pills">

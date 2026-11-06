@@ -9,6 +9,12 @@ export type ActiveProfile = {
   meta_json: Record<string, unknown>;
 };
 
+export type HeadlineLanguage = "nl" | "en";
+
+export function headlineLanguageForProfileId(profileId: string): HeadlineLanguage {
+  return profileId.startsWith("profile_en_") ? "en" : "nl";
+}
+
 async function readFileIfExists(filePath: string): Promise<string | null> {
   try {
     return await fs.readFile(filePath, "utf-8");
@@ -17,7 +23,7 @@ async function readFileIfExists(filePath: string): Promise<string | null> {
   }
 }
 
-async function filesystemFallback(): Promise<ActiveProfile | null> {
+async function filesystemFallback(pointerName = "current_profile.json"): Promise<ActiveProfile | null> {
   const roots = [
     process.env.PROMPT_PROFILES_DIR ? path.resolve(process.env.PROMPT_PROFILES_DIR) : null,
     path.resolve(process.cwd(), "prompt_profiles"),
@@ -26,7 +32,7 @@ async function filesystemFallback(): Promise<ActiveProfile | null> {
   ].filter(Boolean) as string[];
 
   for (const root of roots) {
-    const pointerPath = path.join(root, "current_profile.json");
+    const pointerPath = path.join(root, pointerName);
     const pointerRaw = await readFileIfExists(pointerPath);
     if (!pointerRaw) continue;
     const pointer = JSON.parse(pointerRaw) as { profile_id: string };
@@ -39,7 +45,12 @@ async function filesystemFallback(): Promise<ActiveProfile | null> {
   return null;
 }
 
-export async function getActiveProfile(): Promise<ActiveProfile> {
+export async function getActiveProfile(language: HeadlineLanguage = "nl"): Promise<ActiveProfile> {
+  if (language === "en") {
+    const english = await filesystemFallback("current_profile_en.json");
+    if (!english) throw new Error("Geen actief Engels promptprofiel gevonden.");
+    return english;
+  }
   const admin = createSupabaseAdminClient();
   const { data } = await admin
     .from("profiles")

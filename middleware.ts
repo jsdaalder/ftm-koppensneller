@@ -41,6 +41,12 @@ export async function middleware(req: NextRequest) {
 
   const needsAuth = req.nextUrl.pathname.startsWith("/app") || req.nextUrl.pathname.startsWith("/creator");
   if (needsAuth && !user) {
+    console.warn("protected route redirected without session", {
+      requestId: req.headers.get("x-vercel-id") || "unknown",
+      host: req.nextUrl.host,
+      path: req.nextUrl.pathname,
+      userAgent: req.headers.get("user-agent")?.slice(0, 200) || "unknown",
+    });
     const loginUrl = new URL("/login", req.url);
     loginUrl.searchParams.set("next", req.nextUrl.pathname);
     return NextResponse.redirect(loginUrl);

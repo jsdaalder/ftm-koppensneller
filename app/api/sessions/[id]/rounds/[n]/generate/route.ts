@@ -92,15 +92,31 @@ ${parsed.user_revision_text || "(geen)"}
     });
 
     const directionTags = parseDirectionTags(parsed.feedback_text);
-    await admin.from("session_rounds").insert({
+    const { data: previousRound, error: previousRoundErr } = await admin
+      .from("session_rounds")
+      .update({
+        selected_indices: parsed.selected_indices,
+        feedback_text: parsed.feedback_text,
+        direction_tags: directionTags,
+        user_revision_text: parsed.user_revision_text,
+      })
+      .eq("session_id", sessionId)
+      .eq("round_number", roundNumber - 1)
+      .select("id")
+      .maybeSingle();
+    if (previousRoundErr) throw previousRoundErr;
+    if (!previousRound) throw new Error("Previous session round not found.");
+
+    const { error: newRoundErr } = await admin.from("session_rounds").insert({
       session_id: sessionId,
       round_number: roundNumber,
       suggestions_json: suggestions,
-      selected_indices: parsed.selected_indices,
-      feedback_text: parsed.feedback_text,
-      direction_tags: directionTags,
-      user_revision_text: parsed.user_revision_text,
+      selected_indices: [],
+      feedback_text: "",
+      direction_tags: [],
+      user_revision_text: "",
     });
+    if (newRoundErr) throw newRoundErr;
 
     return NextResponse.json({ round_number: roundNumber, suggestions, headline_language: parsed.headline_language });
   } catch (err) {

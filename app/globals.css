@@ -384,35 +384,53 @@ input, select, textarea, button {
   cursor: not-allowed;
 }
 
-.ftm-app-language-toggle {
+.ftm-app-language-switch {
   display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  width: fit-content;
   border: 1px solid #c7beaf;
+  border-radius: 999px;
+  padding: 6px 12px 6px 7px;
   background: #fff;
-}
-
-.ftm-app-language-toggle-btn {
-  border: 0;
-  border-right: 1px solid #c7beaf;
-  border-radius: 0;
-  padding: 7px 9px;
-  min-width: 40px;
-  background: transparent;
   color: #2d313a;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 800;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
+  cursor: pointer;
 }
 
-.ftm-app-language-toggle-btn:last-child {
-  border-right: 0;
+.ftm-app-language-switch-track {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 36px;
+  height: 20px;
+  border-radius: 999px;
+  background: #c7beaf;
+  transition: background 120ms ease;
 }
 
-.ftm-app-language-toggle-btn.is-active {
+.ftm-app-language-switch-thumb {
+  position: absolute;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.24);
+  transition: transform 120ms ease;
+}
+
+.ftm-app-language-switch-thumb.is-on {
+  transform: translateX(16px);
+}
+
+.ftm-app-language-switch.is-on .ftm-app-language-switch-track {
   background: #2a2d33;
-  color: #fff;
 }
 
-.ftm-app-language-toggle-btn:disabled {
+.ftm-app-language-switch:disabled {
   opacity: 0.62;
   cursor: not-allowed;
 }

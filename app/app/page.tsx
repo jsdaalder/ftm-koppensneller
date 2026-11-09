@@ -126,8 +126,8 @@ const fallbackAppCopy: AppCopy = {
   start_session_button: "Start sessie",
   next_round_button: "Nieuwe ronde",
   language_switch_label: "Taal en kopeditie",
-  language_nl_button: "Nederlands · FTM.nl",
-  language_en_button: "English · FTM.eu",
+  language_nl_button: "FTM.nl",
+  language_en_button: "FTM.eu",
   language_changed: "Taal en kopeditie ingesteld op",
   based_title: "Waarop deze tool gebaseerd is",
   based_intro: "We gebruiken een uitgebreide LLM-superprompt om koppen te maken die passen bij Follow the Money.",
@@ -576,15 +576,19 @@ export default function AppPage() {
           </div>
           <p className="ftm-coach-meta">{copy.description}</p>
           <div className="ftm-doc-prose">
-            <h2>{copy.based_title}</h2>
-            <p>{copy.based_intro}</p>
-            <p>{copy.based_sources_title}</p>
-            <ul>
-              {copy.based_sources.map((item, i) => <li key={`${i}-${item}`}>{renderMaybeLink(item)}</li>)}
-            </ul>
-            <p>{copy.based_process}</p>
-            <p>{renderMaybeLink(copy.superprompt_link)}</p>
-            <p>{renderMaybeLink(copy.github_link)}</p>
+            <details className="ftm-doc-accordion">
+              <summary>{copy.based_title}</summary>
+              <div className="ftm-doc-accordion-body">
+                <p>{copy.based_intro}</p>
+                <p>{copy.based_sources_title}</p>
+                <ul>
+                  {copy.based_sources.map((item, i) => <li key={`${i}-${item}`}>{renderMaybeLink(item)}</li>)}
+                </ul>
+                <p>{copy.based_process}</p>
+                <p>{renderMaybeLink(copy.superprompt_link)}</p>
+                <p>{renderMaybeLink(copy.github_link)}</p>
+              </div>
+            </details>
             <h2>{copy.how_title}</h2>
             <p>{copy.how_copy}</p>
           </div>
@@ -593,24 +597,20 @@ export default function AppPage() {
             {copy.language_session_prefix} <strong>{headlineLanguageLabel(currentHeadlineLanguage)}</strong>
           </p>
           <label className="ftm-coach-label">{copy.language_switch_label}</label>
-          <div className="ftm-app-language-toggle" role="group" aria-label={copy.language_switch_label}>
-            <button
-              type="button"
-              className={`ftm-app-language-toggle-btn ${currentHeadlineLanguage === "nl" ? "is-active" : ""}`}
-              onClick={() => selectHeadlineLanguage("nl")}
-              disabled={Boolean(session)}
-            >
-              {copy.language_nl_button}
-            </button>
-            <button
-              type="button"
-              className={`ftm-app-language-toggle-btn ${currentHeadlineLanguage === "en" ? "is-active" : ""}`}
-              onClick={() => selectHeadlineLanguage("en")}
-              disabled={Boolean(session)}
-            >
-              {copy.language_en_button}
-            </button>
-          </div>
+          <button
+            type="button"
+            className={`ftm-app-language-switch ${currentHeadlineLanguage === "en" ? "is-on" : ""}`}
+            role="switch"
+            aria-checked={currentHeadlineLanguage === "en"}
+            aria-label={`${copy.language_switch_label}: ${headlineLanguageLabel(currentHeadlineLanguage)}`}
+            onClick={() => selectHeadlineLanguage(currentHeadlineLanguage === "nl" ? "en" : "nl")}
+            disabled={Boolean(session)}
+          >
+            <span className="ftm-app-language-switch-track" aria-hidden="true">
+              <span className={`ftm-app-language-switch-thumb ${currentHeadlineLanguage === "en" ? "is-on" : ""}`} />
+            </span>
+            <span>{currentHeadlineLanguage === "en" ? copy.language_en_button : copy.language_nl_button}</span>
+          </button>
           <label className="ftm-coach-label">{copy.genre_label}</label>
           <select className="ftm-coach-select" value={genre} onChange={(e) => setGenre(e.target.value)}>
             <option value="nieuws">{copy.genre_news}</option>

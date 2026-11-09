@@ -233,10 +233,10 @@ Nieuwe ronde
 Taal en kopeditie
 
 ### language_nl_button
-Nederlands · FTM.nl
+FTM.nl
 
 ### language_en_button
-English · FTM.eu
+FTM.eu
 
 ### language_changed
 Taal en kopeditie ingesteld op
@@ -455,10 +455,10 @@ This tool generates headline options for your draft in iterative rounds, based o
 Interface language and headline edition
 
 ### language_nl_button
-Nederlands · FTM.nl
+FTM.nl
 
 ### language_en_button
-English · FTM.eu
+FTM.eu
 
 ### language_changed
 Interface language and headline edition set to

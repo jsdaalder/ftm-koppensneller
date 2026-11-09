@@ -1,0 +1,53 @@
+{
+  "profiles": [
+    {
+      "language": "nl",
+      "pointer": "prompt_profiles/current_profile.json",
+      "before": "prompt_profiles/profile_20261106155229.md",
+      "mustInclude": [
+        "## Hoogste prioriteit: drie verplichte lessen uit Koppensneller",
+        "## Verplichte eindcheck voor elke voorgestelde kop",
+        "## Juridische en ethische grenzen"
+      ],
+      "beforeMustInclude": [
+        "## Verplichte eindcheck op deze drie fouten",
+        "## Outputformat"
+      ],
+      "afterMustNotInclude": [
+        "## Verplichte eindcheck op deze drie fouten",
+        "## Outputformat",
+        "## Kopvoorstellen"
+      ]
+    },
+    {
+      "language": "en",
+      "pointer": "prompt_profiles/current_profile_en.json",
+      "before": "prompt_profiles/profile_en_20261106160754.md",
+      "mustInclude": [
+        "## 4. Headline Quality Criteria",
+        "## 7. Questions, Wit, Imagery, Colons and Curiosity",
+        "## 9. Editing Checklist"
+      ],
+      "beforeMustInclude": [
+        "## 10. Output Rules for Generating Headline Options",
+        "## Headline options"
+      ],
+      "afterMustNotInclude": [
+        "## 10. Output Rules for Generating Headline Options",
+        "## Headline options",
+        "## Best choice"
+      ]
+    }
+  ],
+  "runtime": {
+    "file": "lib/server/generator.ts",
+    "mustInclude": [
+      "const englishAdapterInstruction",
+      "Output ALL headlines in English."
+    ],
+    "mustNotInclude": [
+      "const languageAdapterSection",
+      "${languageAdapterSection}"
+    ]
+  }
+}

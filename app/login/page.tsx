@@ -132,7 +132,7 @@ const fallbackDutchLandingCopy: LoginLanguageCopy = {
   otp_callback_error: "Verificatie via magic link is mislukt. Vraag een nieuwe link aan.",
   invalid_link_error: "Ongeldige of onvolledige inloglink. Vraag een nieuwe link aan.",
   based_title: "Hoe deze tool werkt",
-  based_intro: "Deze tool draait op gpt-4.1 en een uitgebreide [prompt](/docs/super-prompt). Lees meer over het project op [GitHub](https://github.com/jsdaalder/ftm-koppensneller).",
+  based_intro: "Deze tool draait op gpt-5.6-luna en een uitgebreide [prompt](/docs/super-prompt). Lees meer over het project op [GitHub](https://github.com/jsdaalder/ftm-koppensneller).",
 };
 
 const fallbackEnglishLoginCopy: LoginLanguageCopy = {
@@ -163,7 +163,7 @@ const fallbackEnglishLoginCopy: LoginLanguageCopy = {
   otp_callback_error: "Magic-link verification failed. Request a new link.",
   invalid_link_error: "Invalid or incomplete login link. Request a new link.",
   based_title: "How this tool works",
-  based_intro: "This tool runs on gpt-4.1 and an extensive [prompt](/docs/super-prompt). Read more about the project on [GitHub](https://github.com/jsdaalder/ftm-koppensneller).",
+  based_intro: "This tool runs on gpt-5.6-luna and an extensive [prompt](/docs/super-prompt). Read more about the project on [GitHub](https://github.com/jsdaalder/ftm-koppensneller).",
 };
 
 export default function LoginPage() {

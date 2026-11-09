@@ -5,6 +5,11 @@
   "input_hash": "a368e34cf2542cd2b4b618909bf92fc9509dd26832afd38ffef4cff5fb765d45",
   "approved_export_id": null,
   "training_jsonl_hash": "91d050c4555a65e92d13728b31638e3eb87566e9d0fd815a91d0ad6c267bccf7",
+  "consolidated_from": "profile_20261106155229",
+  "consolidation_notes": [
+    "Removed the duplicate three-rule checklist; the final checklist remains authoritative.",
+    "Removed Markdown response templates because the API owns the structured JSON output contract."
+  ],
   "sources": [
     {
       "key": "ftm-stijlgids-condensed",

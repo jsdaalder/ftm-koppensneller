@@ -9,5 +9,9 @@
   "scored_headlines_hash": "63eb2798314a36145193a6747873f6e849ffac40e8ce26feea6ac5af276f97ce",
   "positive_examples": 25,
   "negative_examples": 20,
-  "flagged_examples": 30
+  "flagged_examples": 30,
+  "consolidated_from": "profile_en_20261106160754",
+  "consolidation_notes": [
+    "Removed Markdown response templates because the API owns the structured JSON output contract."
+  ]
 }

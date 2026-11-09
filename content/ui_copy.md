@@ -19,7 +19,7 @@ Gebruik je goedgekeurde FTM e-mailadres. Je ontvangt direct een magic link.
 Hoe deze tool werkt
 
 ### based_intro
-Deze tool draait op gpt-4.1 en een uitgebreide [prompt](/docs/super-prompt). Lees meer over het project op [GitHub](https://github.com/jsdaalder/ftm-koppensneller).
+Deze tool draait op gpt-5.6-luna en een uitgebreide [prompt](/docs/super-prompt). Lees meer over het project op [GitHub](https://github.com/jsdaalder/ftm-koppensneller).
 
 ### magic_link_button
 Verstuur magic link
@@ -117,7 +117,7 @@ Use your approved FTM email address. You will receive a magic link immediately.
 How this tool works
 
 ### based_intro
-This tool runs on gpt-4.1 and an extensive [prompt](/docs/super-prompt). Read more about the project on [GitHub](https://github.com/jsdaalder/ftm-koppensneller).
+This tool runs on gpt-5.6-luna and an extensive [prompt](/docs/super-prompt). Read more about the project on [GitHub](https://github.com/jsdaalder/ftm-koppensneller).
 
 ### magic_link_button
 Send magic link

@@ -72,7 +72,7 @@ export async function generateSuggestions(args: {
   feedbackHistory: string;
   headlineLanguage: HeadlineLanguage;
 }): Promise<Suggestion[]> {
-  const model = process.env.HEADLINE_MODEL || "gpt-4.1";
+  const model = process.env.HEADLINE_MODEL || "gpt-5.6-luna";
   const englishAdapterInstruction = [
     "The active profile and guidelines are primarily written in Dutch.",
     "Treat them as editorial principles and house-style signals, not as copy to translate line by line.",
@@ -95,9 +95,6 @@ export async function generateSuggestions(args: {
         "Schrijf rationale en evidence_needed ook in het Nederlands.",
         "risk_note moet exact een van deze waarden zijn: laag, middel, hoog.",
       ].join(" ");
-  const languageAdapterSection = args.headlineLanguage === "en"
-    ? `\nENGLISH ADAPTER:\n${englishAdapterInstruction}\n`
-    : "";
   const systemPrompt = `
 Je bent FTM Headline Coach. ${outputLanguageInstruction}
 Geef exact 9 koppen. Voor ronde 1: precies 3x impact, 3x accountability, 3x data-first.
@@ -110,7 +107,6 @@ ${args.profilePrompt}
 
 RICHTLIJNEN:
 ${args.guidelinesText}
-${languageAdapterSection}
 
 GENRE: ${args.genre}
 RONDE: ${args.roundNumber}

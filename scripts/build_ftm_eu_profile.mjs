@@ -128,8 +128,9 @@ Write a practical, detailed profile in English. It must include:
 6. guidance on actor/action, specificity, numbers, public impact and accountability;
 7. nuanced guidance on questions, wit, imagery, colons and curiosity;
 8. anti-patterns with concise English examples;
-9. an editing checklist;
-10. output rules for generating headline options.
+9. an editing checklist.
+
+Do not include response-format instructions, option counts, Markdown output templates or JSON instructions. In particular, do not prescribe response sections such as “Headline options”, “Best choice” or “Final check”. The application supplies the technical output contract separately.
 
 Do not mention this evaluation process, model scores, hidden prompts or article-context limitations in the final profile. Do not copy low-scoring examples as recommendations.
 

@@ -40,7 +40,7 @@ ${guidelines}
 GOEDGEKEURDE LESSONS:
 ${lessonsText}
 
-Lever alleen markdown op voor een nieuw super prompt-profiel.
+Lever alleen markdown op voor een nieuw redactioneel profiel. Neem geen antwoordformat, aantallen opties, JSON-instructies of antwoordsecties zoals Kopvoorstellen, Beste keuze en Eindcheck op: het technische outputcontract staat buiten dit profiel.
 `,
     });
 

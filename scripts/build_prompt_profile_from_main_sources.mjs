@@ -199,7 +199,7 @@ async function main() {
     "BRON 7: Approved user feedback (raw, for audit)",
     approvedFeedbackRaw,
     "",
-    "Lever alleen markdown op voor het superpromptprofiel. Geen uitleg erbuiten.",
+    "Lever alleen markdown op voor het redactionele profiel. Beschrijf geen antwoordformat, aantallen opties, JSON-instructies of antwoordsecties zoals Kopvoorstellen, Beste keuze en Eindcheck: het technische outputcontract staat buiten dit profiel.",
   ].join("\n\n");
 
   const promptMarkdown = await runOpenAIText({ model, systemPrompt, userPrompt });

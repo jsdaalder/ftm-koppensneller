@@ -95,7 +95,7 @@ Scheduled jobs:
 
 Model names are configurable through environment variables. Current defaults are documented in `.env.example`:
 
-- `HEADLINE_MODEL` — headline generation; default `gpt-4.1`.
+- `HEADLINE_MODEL` — headline generation; default `gpt-5.6-luna`.
 - `DRAFT_SUMMARY_MODEL` — draft summarisation; default `gpt-4.1-mini`.
 - `BUILD_PROFILE_MODEL` — prompt-profile rebuilds; default `gpt-5.5`.
 - `DIGEST_MODEL` — weekly feedback digest; default `gpt-4.1`.
@@ -143,6 +143,14 @@ Before finalising a change, run:
 npm run build
 git diff --check
 ```
+
+For a prompt-profile consolidation, compare the working tree with the pre-change Git revision:
+
+```bash
+node scripts/evaluate_prompt_profiles.mjs --before-ref HEAD
+```
+
+This regression check verifies that the core Dutch and English editorial rules remain present, response templates stay out of the profiles, and the English adapter is injected only once at runtime.
 
 ## Repository layout
 

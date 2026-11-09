@@ -69,14 +69,6 @@ input, select, textarea, button {
   filter: invert(1);
 }
 
-.ftm-login-kicker {
-  margin: 0 0 14px;
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #dad7d2;
-}
-
 .ftm-login-title {
   margin: 0 0 16px;
   font-family: "Arial Narrow", "Avenir Next Condensed", "Franklin Gothic Medium", sans-serif;
@@ -91,6 +83,14 @@ input, select, textarea, button {
   max-width: 42ch;
   color: #cfcbc5;
   line-height: 1.5;
+}
+
+.ftm-login-copy a,
+.ftm-login-card a,
+.ftm-coach-list a,
+.ftm-doc-prose a,
+.ftm-doc-list a {
+  color: var(--ftm-red);
 }
 
 .ftm-login-accent-row {
@@ -449,7 +449,6 @@ input, select, textarea, button {
 }
 
 .ftm-coach-list a {
-  color: #0b3b7a;
   text-decoration: none;
 }
 
@@ -698,7 +697,7 @@ input, select, textarea, button {
 }
 
 .ftm-doc-prose a {
-  color: #0b3b7a;
+  color: var(--ftm-red);
 }
 
 .ftm-doc-prose a:hover {
@@ -715,7 +714,6 @@ input, select, textarea, button {
 
 .ftm-doc-list a {
   font-weight: 800;
-  color: #171a20;
 }
 
 .ftm-doc-list a:hover {

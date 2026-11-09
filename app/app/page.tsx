@@ -212,7 +212,7 @@ function renderMaybeLink(text: string): React.ReactNode {
   const label = m[1];
   const href = m[2];
   return (
-    <a href={href} style={{ color: "#0b3b7a", fontWeight: 800 }}>
+    <a href={href}>
       {label}
     </a>
   );

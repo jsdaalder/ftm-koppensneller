@@ -1,8 +1,5 @@
 ## login
 
-### kicker
-Follow the Money
-
 ### title
 Koppensneller
 
@@ -100,9 +97,6 @@ Verificatie via magic link is mislukt. Vraag een nieuwe link aan.
 Ongeldige of onvolledige inloglink. Vraag een nieuwe link aan.
 
 ## login_en
-
-### kicker
-by Jan Daalder
 
 ### title
 FTM Headline Coach

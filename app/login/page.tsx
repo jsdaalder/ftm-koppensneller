@@ -67,7 +67,6 @@ function mapLoginErrorParam(errorCode: string, copy: LoginLanguageCopy): string 
 }
 
 type LoginCopy = {
-  kicker: string;
   title: string;
   hero_copy: string;
   accent: string;
@@ -102,7 +101,6 @@ type LoginLanguageCopy = LoginCopy & {
 };
 
 const fallbackLoginCopy: LoginCopy = {
-  kicker: "Follow the Money",
   title: "Koppensneller",
   hero_copy: "Interne tool voor de redactie van FTM om betere koppen te maken. Gemaakt door [Jan Daalder](https://jandaalder.nl/)",
   accent: "Onderzoeksjournalistiek",
@@ -138,7 +136,6 @@ const fallbackDutchLandingCopy: LoginLanguageCopy = {
 };
 
 const fallbackEnglishLoginCopy: LoginLanguageCopy = {
-  kicker: "by Jan Daalder",
   title: "FTM Headline Coach",
   hero_copy: "Internal tool for FTM’s editorial team to make better headlines.",
   accent: "Investigative journalism",
@@ -226,7 +223,6 @@ export default function LoginPage() {
       const loginEn = json?.copy?.login_en;
       if (login) {
         const nextDutch: LoginLanguageCopy = {
-          kicker: String(login.kicker || fallbackDutchLandingCopy.kicker),
           title: String(login.title || fallbackDutchLandingCopy.title),
           hero_copy: String(login.hero_copy || fallbackDutchLandingCopy.hero_copy),
           accent: String(login.accent || fallbackDutchLandingCopy.accent),
@@ -260,7 +256,6 @@ export default function LoginPage() {
       }
       if (loginEn) {
         setEnglishCopy({
-          kicker: String(loginEn.kicker || fallbackEnglishLoginCopy.kicker),
           title: String(loginEn.title || fallbackEnglishLoginCopy.title),
           hero_copy: String(loginEn.hero_copy || fallbackEnglishLoginCopy.hero_copy),
           accent: String(loginEn.accent || fallbackEnglishLoginCopy.accent),
@@ -394,7 +389,6 @@ export default function LoginPage() {
             alt="Follow the Money"
             className="ftm-login-logo"
           />
-          <p className="ftm-login-kicker">{displayedCopy.kicker}</p>
           <h1 className="ftm-login-title">{displayedCopy.title}</h1>
           <p className="ftm-login-copy">{renderMaybeLink(displayedCopy.hero_copy)}</p>
           <div className="ftm-login-accent-row">

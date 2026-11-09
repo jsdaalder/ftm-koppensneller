@@ -1,43 +1,43 @@
 # Approved User Feedback (Lessons)
 
-Generated at: `2026-05-01T18:45:26.377Z`
+Generated at: `2026-11-06T15:50:21.280Z`
 Model: `gpt-5.5`
-Input hash: `749530c721e165a161348bb911bd1ca33d22e8e290f1e2210f49fc85faf69d88`
+Input hash: `1900ffba990e022bf56a14bb570ab834ad3ccc378ddefc8048fa8bba666c703e`
 
 ---
-## 1) Top lessons
+## Top lessons
 
-- Zet het belangrijkste concrete nieuws in de kop.
-- Gebruik cijfers als ze de kern van het verhaal dragen.
-- Kies het meest nieuwswaardige getal, niet zomaar elk getal.
+- Zet het belangrijkste, concrete nieuwsgetal in de kop.
+- Kies het meest nieuwswaardige cijfer, niet zomaar elk cijfer.
+- Als de gebruiker een cijfer verplicht stelt, moet elke volgende kop dat cijfer bevatten.
 - Combineer cijfers waar mogelijk met de gevolgen voor gewone mensen.
-- Maak duidelijk waarom de lezer dit moet raken.
-- Forceer menselijke impact niet als die te abstract of indirect is.
-- Koppen mogen iets langer zijn als dat nodig is voor precisie.
-- Streef naar maximaal circa 100 tekens.
-- Zet de minst belangrijke informatie achteraan.
-- Leg onbekende termen of projecten uit, of vermijd ze als ankerpunt.
+- Maak duidelijk waarom de lezer dit moet lezen of voelen.
+- Forceer menselijke impact niet als die in de tekst abstract blijft.
+- Koppen mogen iets langer zijn als dat nodig is voor helderheid.
+- Richtlijn: liefst onder 100 tekens.
+- Zet de minst belangrijke informatie achteraan, zodat die kan wegvallen op sociale media.
+- Gebruik termen die een breed publiek begrijpt; vermijd onbekende project- of dossiernamen als dragende haak.
 
-## 2) Anti-patterns to avoid
+## Anti-patterns to avoid
 
 - Gebruik geen clichés zoals ‘buitenspel’, ‘opgeofferd’ of vergelijkbare beeldspraak.
-- Maak de kop niet vaag als er een hard cijfer beschikbaar is.
-- Kies geen minder relevant cijfer alleen omdat het concreet klinkt.
-- Verstop het nieuws niet achter algemene formuleringen.
-- Leun niet op jargon of projectnamen die gemiddelde lezers niet kennen.
-- Maak impact op burgers niet melodramatisch.
-- Gebruik geen opgeklopte termen als die niet strikt kloppen.
-- Laat belangrijke context niet pas helemaal achteraan komen.
-- Maak de kop niet korter ten koste van duidelijkheid.
-- Herhaal geen standaardframes als ‘meer kosten, minder zeggenschap’ zonder concreet nieuws.
+- Maak geen kop die alleen institutioneel of abstract klinkt.
+- Verstop het belangrijkste cijfer niet achteraan.
+- Kies niet een minder relevant getal als er een sterker nieuwsgetal in de tekst staat.
+- Gebruik geen jargon of namen die gemiddelde lezers niet herkennen zonder context.
+- Maak koppen niet korter ten koste van precisie.
+- Laat een eerder opgelegde harde eis niet verdwijnen in een volgende ronde.
+- Introduceer geen nieuwe sector, doelgroep of beleidskwestie om de kop aantrekkelijker te maken.
+- Overdrijf niet met dramatische woorden als de feiten dat niet dragen.
+- Gebruik geen vage impact als er concrete gevolgen in de tekst staan.
 
-## 3) Safety + hallucination guardrails
+## Safety + hallucination guardrails
 
-- Blijf strikt bij de aangeleverde tekst.
-- Introduceer geen onderwerpen die niet in het stuk staan.
-- Voeg geen sectoren, groepen of beleidsdossiers toe zonder basis in de bron.
-- Controleer of elk cijfer exact klopt met de input.
-- Verander de betekenis van percentages, aantallen of jaartallen niet.
-- Verwar besparing, kosten, uitstoot en overnames niet met elkaar.
-- Gebruik alleen causaliteit als die in de bron wordt onderbouwd.
-- Bij twijfel: formuleer feitelijker en specifieker.
+- De originele artikeltekst is de enige feitelijke bron.
+- Feedback mag de invalshoek aanscherpen, maar geen nieuwe feiten toevoegen.
+- Noem geen onderwerpen die niet in het concept staan.
+- Noem geen sectoren, dossiers of groepen die niet in het concept staan.
+- Controleer elk cijfer tegen de brontekst voordat je het gebruikt.
+- Behoud expliciete gebruikersconstraints als harde eisen in alle vervolgrondes.
+- Als een projectnaam onbekend is voor lezers, leg de nadruk op het onderliggende nieuwsfeit.
+- Bij twijfel: blijf dichter bij de tekst en formuleer soberder.

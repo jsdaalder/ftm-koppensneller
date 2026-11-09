@@ -9,6 +9,7 @@ const TRAINING_JSONL = path.join(ROOT, "content", "training", "ftm_headline_trai
 const CORPUS_INSIGHTS_MD = path.join(ROOT, "content", "training", "historical-corpus-insights.md");
 const CONDENSED_STYLEGUIDE = path.join(DOCS_DIR, "ftm-stijlgids-condensed.md");
 const APPROVED_FEEDBACK_LESSONS = path.join(DOCS_DIR, "approved-user-feedback-lessons.md");
+const KOPPENSNELLER_EXAMPLES = path.join(DOCS_DIR, "koppensneller-electric-boogaloo.md");
 const PROFILES_DIR = path.join(ROOT, "prompt_profiles");
 
 function sha256(text) {
@@ -121,6 +122,7 @@ async function main() {
     ["ftm-stijlgids-condensed", CONDENSED_STYLEGUIDE],
     ["comite-cliche-weg-ermee", path.join(DOCS_DIR, "comite-cliche-weg-ermee.md")],
     ["ftm-koppenchecklist", path.join(DOCS_DIR, "ftm-koppenchecklist.md")],
+    ["koppensneller-electric-boogaloo", KOPPENSNELLER_EXAMPLES],
     ["historical_corpus_insights", CORPUS_INSIGHTS_MD],
     ["approved_feedback_lessons", APPROVED_FEEDBACK_LESSONS],
   ];
@@ -169,9 +171,12 @@ async function main() {
     "- FTM-stijlgids (condensed)",
     "- Comite Cliche Weg Ermee",
     "- FTM Koppenchecklist",
+    "- Koppensneller - electric boogaloo (bad headlines and alternatives)",
     "- Historische corpus insights (samenvatting + 20 representatieve voorbeelden)",
     "- Approved user feedback (lessons distilled)",
     "- Approved user feedback",
+    "",
+    "PRIORITEIT: de bron Koppensneller - electric boogaloo beschrijft terugkerende redactionele fouten. Zet de drie lessen daaruit (zichtbare actie, concrete precisie in plaats van vaagheid, en terughoudendheid met de dubbele punt) om in expliciete, hoog-prioritaire regels en een verplichte eindcheck in het nieuwe profiel. Behandel ze niet als optionele stijlvoorkeuren. De dubbele punt is standaard verdacht; alleen concrete, zelfstandig nieuwswaardige uitzonderingen mogen blijven. Behandel formats als 'In X grafieken' evenmin als gewone stijlvarianten: sta ze alleen toe wanneer het artikel aantoonbaar data-first/visueel is, meerdere noodzakelijke visuals bevat, het aantal expliciet bekend is, de visuals samen een redenering dragen en de kop daarnaast een concrete bevinding of consequentie noemt.",
     "",
     "BRON 1: FTM-stijlgids (condensed)",
     docsContent["ftm-stijlgids-condensed"],
@@ -182,13 +187,16 @@ async function main() {
     "BRON 3: FTM Koppenchecklist",
     docsContent["ftm-koppenchecklist"],
     "",
-    "BRON 4: Historische corpus insights",
+    "BRON 4: Koppensneller - electric boogaloo",
+    docsContent["koppensneller-electric-boogaloo"],
+    "",
+    "BRON 5: Historische corpus insights",
     docsContent["historical_corpus_insights"],
     "",
-    "BRON 5: Approved user feedback (lessons distilled)",
+    "BRON 6: Approved user feedback (lessons distilled)",
     docsContent["approved_feedback_lessons"],
     "",
-    "BRON 6: Approved user feedback (raw, for audit)",
+    "BRON 7: Approved user feedback (raw, for audit)",
     approvedFeedbackRaw,
     "",
     "Lever alleen markdown op voor het superpromptprofiel. Geen uitleg erbuiten.",

@@ -589,8 +589,12 @@ export default function AppPage() {
                 <p>{renderMaybeLink(copy.github_link)}</p>
               </div>
             </details>
-            <h2>{copy.how_title}</h2>
-            <p>{copy.how_copy}</p>
+            <details className="ftm-doc-accordion">
+              <summary>{copy.how_title}</summary>
+              <div className="ftm-doc-accordion-body">
+                <p>{copy.how_copy}</p>
+              </div>
+            </details>
           </div>
           <p className="ftm-coach-meta">{copy.future_note}</p>
           <p className="ftm-coach-meta">

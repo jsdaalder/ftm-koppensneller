@@ -1,13 +1,13 @@
 ## login
 
 ### kicker
-FTM Koppensneller
+door Jan Daalder
 
 ### title
-Maak sterkere koppen, met redactionele scherpte.
+FTM-Koppensneller
 
 ### hero_copy
-Interne tool voor redacties: genereer koppen in rondes, geef feedback en leer van wat werkt.
+Interne tool voor de redactie van FTM om betere koppen te maken.
 
 ### accent
 Onderzoeksjournalistiek
@@ -17,6 +17,24 @@ Inloggen
 
 ### form_copy
 Gebruik je goedgekeurde FTM e-mailadres. Je ontvangt direct een magic link.
+
+### based_title
+Waarop deze tool gebaseerd is
+
+### based_intro
+We gebruiken een uitgebreide LLM-superprompt om koppen te maken die passen bij Follow the Money.
+
+### based_sources_title
+Voor het profiel gebruikten we:
+
+### based_sources
+- [de compacte FTM-stijlgids](https://www.spaink.net/wp-content/uploads/FTM-stijlgids.pdf)
+
+### based_process
+We bouwden eerst een Nederlands superpromptprofiel. Voor FTM.eu pasten we dat aan voor natuurlijk internationaal Engels en de stijlpatronen uit een corpus van Engelse FTM-koppen vanaf 2024.
+
+### superprompt_link
+[Bekijk de volledige LLM-superprompt](/docs/super-prompt)
 
 ### magic_link_button
 Verstuur magic link
@@ -96,13 +114,13 @@ Ongeldige of onvolledige inloglink. Vraag een nieuwe link aan.
 ## login_en
 
 ### kicker
-FTM Headline Coach
+by Jan Daalder
 
 ### title
-Sharper headlines, with editorial discipline.
+FTM Headline Coach
 
 ### hero_copy
-Internal tool for editors: generate headlines in rounds, give feedback, and improve what works.
+Internal tool for FTM’s editorial team to make better headlines.
 
 ### accent
 Investigative journalism
@@ -112,6 +130,24 @@ Log in
 
 ### form_copy
 Use your approved FTM email address. You will receive a magic link immediately.
+
+### based_title
+What this tool is based on
+
+### based_intro
+We use a detailed LLM superprompt to create headlines that fit Follow the Money.
+
+### based_sources_title
+For the profile, we used:
+
+### based_sources
+- [the compact FTM style guide](https://www.spaink.net/wp-content/uploads/FTM-stijlgids.pdf)
+
+### based_process
+We first built a Dutch superprompt profile. For FTM.eu, we adapted it for natural international English and the style patterns found in a corpus of English FTM headlines from 2024 onwards.
+
+### superprompt_link
+[View the full LLM superprompt](/docs/super-prompt)
 
 ### magic_link_button
 Send magic link

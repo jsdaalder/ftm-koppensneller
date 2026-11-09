@@ -1,72 +1,82 @@
 # FTM Koppensneller
 
-Technical explanation in English can be found below.
+De [FTM Koppensneller](https://koppensneller.jandaalder.nl) helpt de redactie van Follow the Money om in meerdere rondes betere koppen te maken. Je uploadt een conceptartikel, kiest een kopeditie en genre, beoordeelt de gegenereerde opties en geeft feedback voor een volgende ronde.
 
-### Het probleem
+De tool is intern afgeschermd. Inloggen gaat via een magic link naar een goedgekeurd FTM-e-mailadres. Gebruikers die met een extern account inloggen, moeten daarnaast hun FTM-mailbox verifiëren.
 
-Kunstmatige intelligentie kan journalisten helpen met koppen maken. Dat doen veel FTM'ers ook al en soms werkt dat, maar vaak zijn de suggesties:
-- te generiek of “Amerikaans”
-- niet scherp genoeg op de nieuwswaarde
-- niet in FTM-toon (te veel cliché, te weinig concreet, verkeerde focus)
-- onvoldoende consistent (de ene keer raak, de volgende keer mis)
+## Talen en kopedities
 
-### Wat ik gebouwd heb
-De **FTM Koppensneller** is een webtool die een concept van je artikel gebruikt om koppen te genereren met een taalmodel (om precies te zijn: gpt-4.1). Je kiest de beste opties, geeft feedback (waarom waren de voorgestelde koppen goed of juist niet goed?), en de generator houdt rekening met die feedback bij een volgende ronde. Zo kom je sneller bij een kop die wél FTM-waardig is.
+De app ondersteunt twee gekoppelde edities:
 
-De tool is hier te vinden: https://ftm-koppensneller.vercel.app/
+- `FTM.nl`: Nederlandse interface en Nederlandse headlines.
+- `FTM.eu`: Engelse interface en natuurlijke internationale/UK English headlines.
 
-### Hoe ik dit heb gebouwd
-Wat deze tool anders maakt dan ChatGPT is de instructie die gpt4-1 'onder de motorkap' meekrijgt. Daarin staat precies waaraan een FTM-kop moet voldoen. Deze **FTM-specifieke prompt**:
-- ...volgt de door team-socials en hoofd- en eindredactie opgestelde koppenrichtlijn (`content/docs/ftm-koppenchecklist.md`),
-- ...gebruikt voorbeelden en patronen uit een lijst met bestaande FTM-koppen (`content/training/ftm_headline_training.jsonl` en samenvatting in `content/training/historical-corpus-insights.md`),
-- ... is terughoudend met het gebruik van de clichélijst opgesteld door enkele NRC-redacteuren (`content/docs/comite-cliche-weg-ermee.md`)
-- ...neemt (een gecomprimeerde versie van) de FTM-stijlgids in ogenschouw (`content/docs/ftm-stijlgids-condensed.md`)
-- ...leert van de feedback die jij, de gebruiker, geeft op de kopsuggesties (`content/docs/approved-user-feedback-lessons.md`).
+De editie wordt vóór het starten van een sessie gekozen. Daarna blijft de sessie aan die editie gekoppeld, zodat de gebruikte prompt en logging niet halverwege veranderen. De taalkeuze wordt lokaal onthouden en is ook op de loginpagina beschikbaar.
 
+## Hoe de headlineprofielen worden gemaakt
 
-De prompt zelf kun je in het mapje `prompt_profiles` terugvinden. Dat document is ook los van het gebruik van deze tool nuttig, denk ik.
+Het Nederlandse profiel wordt opgebouwd uit de redactionele bronnen in `content/` en uit goedgekeurde feedback. Belangrijke bronnen zijn:
 
-In de toekomst wil ik de prompt verder verbeteren door een analyse te draaien op een lijst met de koppen die de meeste pageviews van externe platformen hebben gekregen.
+- `content/docs/ftm-stijlgids-condensed.md`
+- `content/docs/comite-cliche-weg-ermee.md`
+- `content/docs/ftm-koppenchecklist.md`
+- `content/docs/koppensneller-electric-boogaloo.md`
+- `content/training/ftm_headline_training.jsonl`
+- `content/training/historical-corpus-insights.md`
+- `content/docs/approved-user-feedback-lessons.md`
 
----
+Het Engelse profiel wordt niet letterlijk vertaald. `scripts/build_ftm_eu_profile.mjs` gebruikt het actuele Nederlandse profiel als uitgangspunt en past het aan voor FTM.eu. Daarbij wordt het beoordeelde Engelse headlinecorpus in `content/training/ftm_english_headlines_scored.csv` gebruikt. De Engelse koppen zijn als zelfstandige headlines beoordeeld, met ruimte voor gecontroleerde schwung, vragen en beeldspraak zolang ze duidelijk en niet-misleidend blijven.
 
-# Technical information (English)
+De actuele profielwijzers staan in:
 
-This repository contains the Next.js app that powers the FTM Koppensneller. The active code lives at the repo root (`app/`, `lib/`, `middleware.ts`).
+- `prompt_profiles/current_profile.json` voor FTM.nl;
+- `prompt_profiles/current_profile_en.json` voor FTM.eu.
 
-## What it does
-- Runs iterative headline generation rounds from an uploaded draft (`.md` in the UI).
-- Collects selections + feedback per round and stores them for review.
-- Provides a creator workflow to approve/reject feedback and rebuild the active prompt profile.
-- Enforces strict access control, quotas, and server-side-only LLM calls.
+Het Nederlandse profiel kan via de creator-workflow opnieuw worden opgebouwd. Het Engelse profiel wordt momenteel via het buildscript gegenereerd en via de Engelse profielwijzer gepubliceerd.
 
-## Stack
+## Technical information
+
+This repository contains the Next.js app that powers the FTM Koppensneller. The active code lives at the repository root (`app/`, `lib/`, `middleware.ts`).
+
+### Stack
+
 - Next.js App Router + TypeScript
-- Supabase (Auth + Postgres)
-- OpenAI API calls (server-side only)
+- Supabase Auth + Postgres
+- OpenAI Responses API, called server-side only
+- Vercel Git integration for production deployment
 
-## Main pages
-- `GET /login`
-- `GET /app` (headline coach)
-- `GET /docs` and `GET /docs/[slug]` (in-app guideline/training docs)
-- `GET /creator` (creator control panel)
-- `GET /creator/queue`
-- `GET /creator/users`
-- `GET /creator/usage`
+### Main pages
 
-## API (selected)
-User/session
+- `GET /login` — public login page with Dutch/English copy and magic-link login.
+- `GET /app` — authenticated headline coach.
+- `GET /docs` and `GET /docs/[slug]` — authenticated in-app guideline and training documents.
+- `GET /creator` — creator control panel.
+- `GET /creator/queue` — feedback review queue.
+- `GET /creator/users` — known users.
+- `GET /creator/usage` — generation usage dashboard.
+
+End-user UI copy is kept in `content/ui_copy.md`, including the Dutch and English login/app sections. The app loads this through `GET /api/ui-copy`.
+
+### API routes
+
+Session and generation:
+
 - `POST /api/sessions`
 - `POST /api/sessions/:id/rounds/:n/generate`
 - `POST /api/sessions/:id/submit-feedback`
 
-Auth / gating
-- `POST /api/auth/magiclink/allowed`
-- `POST /api/auth/ftm/start-verification`
-- `POST /api/auth/ftm/verify-code`
-- `GET /api/auth/ftm/status`
+Authentication and verification:
 
-Creator
+- `GET /auth/callback`
+- `POST /api/auth/magiclink/allowed`
+- `GET /api/auth/me`
+- `POST /api/auth/ftm/start-verification`
+- `GET /api/auth/ftm/status`
+- `POST /api/auth/ftm/verify-code`
+
+Profiles and creator actions:
+
+- `GET /api/profile/active`
 - `GET /api/creator/queue`
 - `POST /api/creator/queue/:id/approve`
 - `POST /api/creator/queue/:id/reject`
@@ -75,53 +85,79 @@ Creator
 - `POST /api/creator/run-weekly-feedback-digest`
 - `GET /api/creator/users`
 
-Cron
+Scheduled jobs:
+
 - `POST /api/cron/weekly-feedback-digest`
 - `POST /api/cron/export-approved-feedback`
 - `POST /api/cron/export-approved-feedback-lessons`
 
-## Prompt profile sources
-The active prompt profile is built from the canonical sources in `content/` and `content/training/` and published via the creator workflow. Key inputs include:
-- `content/docs/ftm-koppenchecklist.md`
-- `content/docs/ftm-stijlgids-condensed.md`
-- `content/docs/comite-cliche-weg-ermee.md`
-- `content/training/ftm_headline_training.jsonl`
-- `content/training/historical-corpus-insights.md`
-- `content/docs/approved-user-feedback-lessons.md`
+### Models and configuration
 
-## Security & access model (high level)
-- OpenAI key is never exposed to the browser (`OPENAI_API_KEY` is server-only).
-- Supabase anon key is used client-side; Supabase service role key is server-only.
-- `/app` and `/creator/*` require an authenticated user.
-- Deny-by-default: users must have a row in `user_roles` (and `role=creator` for creator routes).
-- Optional email allowlisting via `ALLOWED_EMAILS` and/or `ALLOWED_EMAIL_DOMAINS`.
+Model names are configurable through environment variables. Current defaults are documented in `.env.example`:
+
+- `HEADLINE_MODEL` — headline generation; default `gpt-4.1`.
+- `DRAFT_SUMMARY_MODEL` — draft summarisation; default `gpt-4.1-mini`.
+- `BUILD_PROFILE_MODEL` — prompt-profile rebuilds; default `gpt-5.5`.
+- `DIGEST_MODEL` — weekly feedback digest; default `gpt-4.1`.
+
+Do not assume the deployed model from the README alone: Vercel environment variables can override these defaults.
+
+### Security and access control
+
+- `OPENAI_API_KEY` and `SUPABASE_SERVICE_ROLE_KEY` are server-only.
+- No secret is exposed through `NEXT_PUBLIC_*` variables.
+- `/app`, `/creator/*`, and `/docs/*` require an authenticated user.
+- Access is deny-by-default: users need an appropriate `user_roles` record.
+- Creator routes additionally require the `creator` role, with optional `CREATOR_EMAILS` support.
+- Email access can be restricted with `ALLOWED_EMAILS` and/or `ALLOWED_EMAIL_DOMAINS`.
 - Mutating endpoints enforce same-origin checks.
+- Draft uploads are limited to `.md` files and are parsed server-side.
 
-## Usage limits / cost control
-- Per-user daily limit via `DAILY_GENERATION_LIMIT`
-- Global daily limit via `GLOBAL_DAILY_GENERATION_LIMIT`
-- Quota checks are atomic in Postgres (`consume_generation_quota`) to avoid race-condition bypasses.
+### Usage limits and cost control
 
-## Weekly feedback digest
-- Summarizes the last week of submitted feedback using an LLM.
-- Stores output in `weekly_feedback_digests` for audit/history.
-- Cron trigger: `POST /api/cron/weekly-feedback-digest` guarded by `CRON_SECRET` (Bearer or `x-cron-secret`).
-- Manual creator trigger: `POST /api/creator/run-weekly-feedback-digest?force=true`
+- `DAILY_GENERATION_LIMIT` limits each user’s generation calls.
+- `GLOBAL_DAILY_GENERATION_LIMIT` limits total daily generation calls.
+- Quota consumption is atomic in Postgres through `consume_generation_quota`.
+
+### Feedback and prompt governance
+
+User feedback is stored per session and submitted to the creator queue. Creators can approve or reject feedback, add review notes, export approved lessons and rebuild the Dutch profile. The rebuild and review actions are audit-logged.
+
+The weekly digest summarizes recent feedback and stores its result in `weekly_feedback_digests`. It can run through the protected cron endpoint or the creator endpoint:
+
+- Cron: `POST /api/cron/weekly-feedback-digest` with `CRON_SECRET`.
+- Manual: `POST /api/creator/run-weekly-feedback-digest?force=true`.
 
 ## Local development
-1. Copy `.env.example` to `.env.local` and fill in values.
-2. Install deps: `npm install`
-3. Set up Supabase DB schema by running the SQL migrations in `supabase/migrations/` (in order).
-4. Start: `npm run dev`
 
-## Repo layout
-- `app/`: Next.js pages + API routes
-- `lib/`: server/client helpers (Supabase, OpenAI, security, etc.)
-- `supabase/migrations/`: database schema and policies
-- `content/`: docs and training inputs (source material)
-- `prompt_profiles/`: generated prompt profile artifacts
-- `scripts/`: profile build/export helpers
+1. Copy `.env.example` to `.env.local` and fill in the required values.
+2. Install dependencies: `npm install`.
+3. Apply the SQL migrations in `supabase/migrations/` in order.
+4. Make sure `GUIDELINES_DIR` points to a directory containing `ftm_styleguide/`, `generic_headline_guides/`, and `extra_docs/`. If it is unset, the code looks for `../guidelines` relative to the repository root.
+5. Leave `PROMPT_PROFILES_DIR` unset for the repository-local `prompt_profiles/` fallback, or set it to an explicit profile directory.
+6. Start the development server: `npm run dev`.
 
-## Notes for publishing
-- Do not commit `.env`, `.env.local`, `.vercel/`, or any key material.
-- Audit large binary assets under `style_info/` and `content/training/` before making the repo public.
+Before finalising a change, run:
+
+```bash
+npm run build
+git diff --check
+```
+
+## Repository layout
+
+- `app/` — Next.js pages and API routes.
+- `lib/` — server/client helpers for Supabase, OpenAI, security and profiles.
+- `supabase/migrations/` — database schema and policies.
+- `content/` — UI copy, documents and training inputs.
+- `prompt_profiles/` — generated prompt profiles and current-profile pointers.
+- `scripts/` — profile, corpus, feedback and export helpers.
+
+## Deployment
+
+The Vercel project deploys from the repository root. Pushing to the connected `main` branch triggers a production deployment. The live domains are:
+
+- [koppensneller.jandaalder.nl](https://koppensneller.jandaalder.nl)
+- [ftm-koppensneller.vercel.app](https://ftm-koppensneller.vercel.app), which redirects to the custom domain.
+
+Do not commit `.env`, `.env.local`, `.vercel/`, tokens, or other key material. Review large binary assets before making the repository public.

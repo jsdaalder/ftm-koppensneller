@@ -5,6 +5,7 @@ import path from "node:path";
 const ROOT = process.cwd();
 const IN_PATH = path.join(ROOT, "content", "docs", "approved-user-feedback.md");
 const OUT_PATH = path.join(ROOT, "content", "docs", "approved-user-feedback-lessons.md");
+const DISTILL_RULES_VERSION = "2";
 
 async function readUtf8(fp) {
   return (await readFile(fp, "utf8")).toString();
@@ -80,7 +81,7 @@ async function main() {
 
   const model = process.env.DISTILL_FEEDBACK_MODEL || "gpt-5.5";
   const raw = await readUtf8(IN_PATH);
-  const inputHash = sha256(raw + "::" + model);
+  const inputHash = sha256(raw + "::" + model + "::" + DISTILL_RULES_VERSION);
 
   // No-op if unchanged
   try {
@@ -109,6 +110,8 @@ async function main() {
       "  3) 'Safety + hallucination guardrails' (max 8 bullets)",
       "- Gebruik korte, duidelijke zinnen.",
       "- Geen persoonsnamen; focus op regels.",
+      "- Behandel expliciete gebruikersconstraints als harde eisen die in alle volgende rondes blijven gelden; een verzoek als 'alle koppen moeten 0,4% bevatten' mag niet verdwijnen door een nieuwe ronde.",
+      "- Houd de originele artikeltekst als enige feitelijke bron: feedback mag de invalshoek aanscherpen, maar mag geen nieuw onderwerp, feit, sector of beleidsdossier introduceren dat niet in het oorspronkelijke concept staat.",
       "",
       "GOEDGEKEURDE FEEDBACK (RAW):",
       raw,

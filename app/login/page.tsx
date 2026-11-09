@@ -396,7 +396,7 @@ export default function LoginPage() {
           />
           <p className="ftm-login-kicker">{displayedCopy.kicker}</p>
           <h1 className="ftm-login-title">{displayedCopy.title}</h1>
-          <p className="ftm-login-copy">{displayedCopy.hero_copy}</p>
+          <p className="ftm-login-copy">{renderMaybeLink(displayedCopy.hero_copy)}</p>
           <div className="ftm-login-accent-row">
             <span className="ftm-login-dot" />
             <span>{displayedCopy.accent}</span>
@@ -461,12 +461,12 @@ export default function LoginPage() {
             </p>
           )}
           {msg && <p className="ftm-login-meta">{msg}</p>}
-          <details className="ftm-doc-accordion ftm-login-method">
-            <summary>{displayedCopy.based_title}</summary>
+          <div className="ftm-doc-accordion ftm-login-method">
+            <h2 className="ftm-coach-h2" style={{ padding: "14px 18px 0" }}>{displayedCopy.based_title}</h2>
             <div className="ftm-doc-accordion-body">
               <p>{renderMaybeLink(displayedCopy.based_intro)}</p>
             </div>
-          </details>
+          </div>
         </div>
       </section>
     </main>

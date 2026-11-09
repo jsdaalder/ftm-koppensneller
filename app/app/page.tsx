@@ -71,14 +71,6 @@ type AppCopy = {
   logout_button: string;
   creator_queue_button: string;
   language_session_prefix: string;
-  genre_label: string;
-  genre_news: string;
-  genre_research: string;
-  genre_analysis: string;
-  genre_feature: string;
-  genre_interview: string;
-  genre_podcast: string;
-  genre_essay: string;
   draft_label: string;
   email_placeholder: string;
   verification_code_placeholder: string;
@@ -137,7 +129,7 @@ const fallbackAppCopy: AppCopy = {
   superprompt_link: "Bekijk de volledige LLM-superprompt",
   github_link: "Lees meer op GitHub",
   how_title: "Hoe je deze tool gebruikt",
-  how_copy: "Upload je concept als .md (uit Google Docs) en kies het genre. Daarna genereren we meerdere kop-opties in verschillende richtingen. Met jouw feedback sturen we elke volgende ronde bij.",
+  how_copy: "Upload je concept als .md (uit Google Docs). Daarna genereren we meerdere kop-opties in verschillende richtingen. Met jouw feedback sturen we elke volgende ronde bij.",
   loading_verification: "Verificatiestatus laden...",
   ftm_email_label: "FTM e-mailadres",
   verification_code_label: "Verificatiecode (6 cijfers)",
@@ -163,14 +155,6 @@ const fallbackAppCopy: AppCopy = {
   logout_button: "Uitloggen",
   creator_queue_button: "Creator Queue",
   language_session_prefix: "Kopeditie voor deze sessie:",
-  genre_label: "Genre",
-  genre_news: "nieuws",
-  genre_research: "onderzoek",
-  genre_analysis: "analyse",
-  genre_feature: "feature",
-  genre_interview: "interview",
-  genre_podcast: "podcast",
-  genre_essay: "essay",
   draft_label: "Concept (.md)",
   email_placeholder: "naam@ftm.nl",
   verification_code_placeholder: "123456",
@@ -235,7 +219,6 @@ function renderMaybeLink(text: string): React.ReactNode {
 }
 
 export default function AppPage() {
-  const [genre, setGenre] = useState("nieuws");
   const [draftFile, setDraftFile] = useState<File | null>(null);
   const [session, setSession] = useState<SessionState | null>(null);
   const [selected, setSelected] = useState<number[]>([]);
@@ -363,7 +346,6 @@ export default function AppPage() {
       setIsStartingSession(true);
       const form = new FormData();
       form.append("draft", draftFile);
-      form.append("genre", genre);
       form.append("headline_language", headlineLanguage);
       setStatus(copy.generating);
       const res = await fetch("/api/sessions", { method: "POST", body: form });
@@ -615,16 +597,6 @@ export default function AppPage() {
             </span>
             <span>{currentHeadlineLanguage === "en" ? copy.language_en_button : copy.language_nl_button}</span>
           </button>
-          <label className="ftm-coach-label">{copy.genre_label}</label>
-          <select className="ftm-coach-select" value={genre} onChange={(e) => setGenre(e.target.value)}>
-            <option value="nieuws">{copy.genre_news}</option>
-            <option value="onderzoek">{copy.genre_research}</option>
-            <option value="analyse">{copy.genre_analysis}</option>
-            <option value="feature">{copy.genre_feature}</option>
-            <option value="interview">{copy.genre_interview}</option>
-            <option value="podcast">{copy.genre_podcast}</option>
-            <option value="essay">{copy.genre_essay}</option>
-          </select>
           <label className="ftm-coach-label">{copy.draft_label}</label>
           <input
             className="ftm-coach-input"

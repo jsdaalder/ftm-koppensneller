@@ -31,7 +31,7 @@ export async function POST(req: Request) {
 
     const formData = await req.formData();
     const file = formData.get("draft");
-    const genre = String(formData.get("genre") || "news");
+    const genre = "nieuws";
     const headlineLanguage = parseHeadlineLanguage(formData.get("headline_language"));
     if (!(file instanceof File)) {
       return NextResponse.json({ error: "Upload exactly one draft file (.md)." }, { status: 400 });

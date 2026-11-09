@@ -224,7 +224,7 @@ Gebruikte bronnen:
 - [Bekijk de volledige LLM-superprompt](/docs/super-prompt) en download daar het ruwe `.md`-bestand
 - [Lees meer op GitHub](https://github.com/jsdaalder/ftm-koppensneller)
 
-Jij uploadt nu je concept als `.md` (uit Google Docs) en kiest het genre. Daarna genereren we meerdere kop-opties in verschillende richtingen. Met jouw feedback sturen we elke volgende ronde bij.
+Jij uploadt nu je concept als `.md` (uit Google Docs). Daarna genereren we meerdere kop-opties in verschillende richtingen. Met jouw feedback sturen we elke volgende ronde bij.
 
 ### future_note
 Geef vooral feedback op de gegenereerde koppen; die feedback gebruiken we om de richtlijnen en prompt stap voor stap te verbeteren.
@@ -282,7 +282,7 @@ Op basis van deze bronnen bouwen we eerst een Nederlands superpromptprofiel. Voo
 Hoe je deze tool gebruikt
 
 ### how_copy
-Upload je concept als `.md` (uit Google Docs) en kies het genre. Daarna genereren we meerdere kop-opties in verschillende richtingen. Met jouw feedback sturen we elke volgende ronde bij.
+Upload je concept als `.md` (uit Google Docs). Daarna genereren we meerdere kop-opties in verschillende richtingen. Met jouw feedback sturen we elke volgende ronde bij.
 
 ### loading_verification
 Verificatiestatus laden...
@@ -358,30 +358,6 @@ Creator Queue
 
 ### language_session_prefix
 Kopeditie voor deze sessie:
-
-### genre_label
-Genre
-
-### genre_news
-nieuws
-
-### genre_research
-onderzoek
-
-### genre_analysis
-analyse
-
-### genre_feature
-feature
-
-### genre_interview
-interview
-
-### genre_podcast
-podcast
-
-### genre_essay
-essay
 
 ### draft_label
 Concept (.md)
@@ -504,7 +480,7 @@ We first built a Dutch superprompt profile from these sources. For FTM.eu, we di
 How to use this tool
 
 ### how_copy
-Upload your draft as `.md` (from Google Docs) and choose the genre. We then generate several headline options in different directions. Your feedback guides each next round.
+Upload your draft as `.md` (from Google Docs). We then generate several headline options in different directions. Your feedback guides each next round.
 
 ### future_note
 Please give feedback on the generated headlines; we use it to improve the guidelines and prompt step by step.
@@ -592,30 +568,6 @@ Creator Queue
 
 ### language_session_prefix
 Headline edition for this session:
-
-### genre_label
-Genre
-
-### genre_news
-News
-
-### genre_research
-Investigation
-
-### genre_analysis
-Analysis
-
-### genre_feature
-Feature
-
-### genre_interview
-Interview
-
-### genre_podcast
-Podcast
-
-### genre_essay
-Essay
 
 ### draft_label
 Draft (.md)

@@ -1,6 +1,6 @@
 # FTM Koppensneller
 
-De [FTM Koppensneller](https://koppensneller.jandaalder.nl) helpt de redactie van Follow the Money om in meerdere rondes betere koppen te maken. Je uploadt een conceptartikel, kiest een kopeditie en genre, beoordeelt de gegenereerde opties en geeft feedback voor een volgende ronde.
+De [FTM Koppensneller](https://koppensneller.jandaalder.nl) helpt de redactie van Follow the Money om in meerdere rondes betere koppen te maken. Je uploadt een conceptartikel, kiest een kopeditie, beoordeelt de gegenereerde opties en geeft feedback voor een volgende ronde.
 
 De tool is intern afgeschermd. Inloggen gaat via een magic link naar een goedgekeurd FTM-e-mailadres. Gebruikers die met een extern account inloggen, moeten daarnaast hun FTM-mailbox verifiëren.
 

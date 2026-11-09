@@ -23,13 +23,13 @@ async function renderMarkdown(md: string): Promise<string> {
 
 export default async function DocPage(props: { params: Promise<{ slug: string }> }) {
   const { slug } = await props.params;
-  const user = await requireUser();
 
   let md = "";
   if (slug === "super-prompt") {
     const active = await getActiveProfile();
     md = active.prompt_markdown;
   } else if (slug === "approved-user-feedback") {
+    const user = await requireUser();
     try {
       await requireCreator(user.id);
     } catch {

@@ -33,9 +33,12 @@ function formatRemaining(ms: number): string {
 }
 
 function renderMaybeLink(text: string): React.ReactNode {
-  const match = text.match(/^\s*\[([^\]]+)\]\(([^)]+)\)\s*$/);
-  if (!match) return text;
-  return <a href={match[2]}>{match[1]}</a>;
+  const parts = text.split(/(\[[^\]]+\]\([^)]+\))/g);
+  if (parts.length === 1) return text;
+  return parts.map((part, index) => {
+    const match = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+    return match ? <a key={index} href={match[2]}>{match[1]}</a> : part;
+  });
 }
 
 function parseCooldownFromError(message: string): number | null {
@@ -96,16 +99,12 @@ type LoginLanguageCopy = LoginCopy & {
   invalid_link_error: string;
   based_title: string;
   based_intro: string;
-  based_sources_title: string;
-  based_sources: string[];
-  based_process: string;
-  superprompt_link: string;
 };
 
 const fallbackLoginCopy: LoginCopy = {
-  kicker: "door Jan Daalder",
-  title: "FTM-Koppensneller",
-  hero_copy: "Interne tool voor de redactie van FTM om betere koppen te maken.",
+  kicker: "Follow the Money",
+  title: "Koppensneller",
+  hero_copy: "Interne tool voor de redactie van FTM om betere koppen te maken. Gemaakt door [Jan Daalder](https://jandaalder.nl/)",
   accent: "Onderzoeksjournalistiek",
   form_title: "Inloggen",
   form_copy: "Gebruik je goedgekeurde FTM e-mailadres. Je ontvangt direct een magic link.",
@@ -134,12 +133,8 @@ const fallbackDutchLandingCopy: LoginLanguageCopy = {
   oauth_callback_error: "Inloggen is mislukt tijdens de verificatie. Probeer opnieuw.",
   otp_callback_error: "Verificatie via magic link is mislukt. Vraag een nieuwe link aan.",
   invalid_link_error: "Ongeldige of onvolledige inloglink. Vraag een nieuwe link aan.",
-  based_title: "Waarop deze tool gebaseerd is",
-  based_intro: "We gebruiken een uitgebreide LLM-superprompt om koppen te maken die passen bij Follow the Money.",
-  based_sources_title: "Voor het profiel gebruikten we:",
-  based_sources: ["[de compacte FTM-stijlgids](https://www.spaink.net/wp-content/uploads/FTM-stijlgids.pdf)"],
-  based_process: "We bouwden eerst een Nederlands superpromptprofiel. Voor FTM.eu pasten we dat aan voor natuurlijk internationaal Engels en de stijlpatronen uit een corpus van Engelse FTM-koppen vanaf 2024.",
-  superprompt_link: "[Bekijk de volledige LLM-superprompt](/docs/super-prompt)",
+  based_title: "Hoe deze tool werkt",
+  based_intro: "Deze tool draait op gpt-4.1 en een uitgebreide [prompt](/docs/super-prompt). Lees meer over het project op [GitHub](https://github.com/jsdaalder/ftm-koppensneller).",
 };
 
 const fallbackEnglishLoginCopy: LoginLanguageCopy = {
@@ -170,12 +165,8 @@ const fallbackEnglishLoginCopy: LoginLanguageCopy = {
   oauth_callback_error: "Login failed during verification. Please try again.",
   otp_callback_error: "Magic-link verification failed. Request a new link.",
   invalid_link_error: "Invalid or incomplete login link. Request a new link.",
-  based_title: "What this tool is based on",
-  based_intro: "We use a detailed LLM superprompt to create headlines that fit Follow the Money.",
-  based_sources_title: "For the profile, we used:",
-  based_sources: ["[the compact FTM style guide](https://www.spaink.net/wp-content/uploads/FTM-stijlgids.pdf)"],
-  based_process: "We first built a Dutch superprompt profile. For FTM.eu, we adapted it for natural international English and the style patterns found in a corpus of English FTM headlines from 2024 onwards.",
-  superprompt_link: "[View the full LLM superprompt](/docs/super-prompt)",
+  based_title: "How this tool works",
+  based_intro: "This tool runs on gpt-4.1 and an extensive [prompt](/docs/super-prompt). Read more about the project on [GitHub](https://github.com/jsdaalder/ftm-koppensneller).",
 };
 
 export default function LoginPage() {
@@ -264,10 +255,6 @@ export default function LoginPage() {
           invalid_link_error: String(login.invalid_link_error || fallbackDutchLandingCopy.invalid_link_error),
           based_title: String(login.based_title || fallbackDutchLandingCopy.based_title),
           based_intro: String(login.based_intro || fallbackDutchLandingCopy.based_intro),
-          based_sources_title: String(login.based_sources_title || fallbackDutchLandingCopy.based_sources_title),
-          based_sources: Array.isArray(login.based_sources) ? login.based_sources.map(String) : fallbackDutchLandingCopy.based_sources,
-          based_process: String(login.based_process || fallbackDutchLandingCopy.based_process),
-          superprompt_link: String(login.superprompt_link || fallbackDutchLandingCopy.superprompt_link),
         };
         setLoginCopy(nextDutch);
       }
@@ -302,10 +289,6 @@ export default function LoginPage() {
           invalid_link_error: String(loginEn.invalid_link_error || fallbackEnglishLoginCopy.invalid_link_error),
           based_title: String(loginEn.based_title || fallbackEnglishLoginCopy.based_title),
           based_intro: String(loginEn.based_intro || fallbackEnglishLoginCopy.based_intro),
-          based_sources_title: String(loginEn.based_sources_title || fallbackEnglishLoginCopy.based_sources_title),
-          based_sources: Array.isArray(loginEn.based_sources) ? loginEn.based_sources.map(String) : fallbackEnglishLoginCopy.based_sources,
-          based_process: String(loginEn.based_process || fallbackEnglishLoginCopy.based_process),
-          superprompt_link: String(loginEn.superprompt_link || fallbackEnglishLoginCopy.superprompt_link),
         });
       }
     })();
@@ -481,15 +464,7 @@ export default function LoginPage() {
           <details className="ftm-doc-accordion ftm-login-method">
             <summary>{displayedCopy.based_title}</summary>
             <div className="ftm-doc-accordion-body">
-              <p>{displayedCopy.based_intro}</p>
-              <p>{displayedCopy.based_sources_title}</p>
-              <ul>
-                {displayedCopy.based_sources.map((item, i) => (
-                  <li key={`${i}-${item}`}>{renderMaybeLink(item)}</li>
-                ))}
-              </ul>
-              <p>{displayedCopy.based_process}</p>
-              <p>{renderMaybeLink(displayedCopy.superprompt_link)}</p>
+              <p>{renderMaybeLink(displayedCopy.based_intro)}</p>
             </div>
           </details>
         </div>
